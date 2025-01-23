@@ -9,12 +9,12 @@ package chess;
 public class ChessMove {
     public ChessPosition startposition;
     public ChessPosition endposition;
-    public ChessPiece.PieceType chesspiece;
+    public ChessPiece.PieceType promotion;
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition,
                      ChessPiece.PieceType promotionPiece) {
         this.startposition=startPosition;
         this.endposition=endPosition;
-        this.chesspiece=promotionPiece;
+        this.promotion=promotionPiece;
     }
 
     /**
@@ -29,7 +29,6 @@ public class ChessMove {
      * @return ChessPosition of ending location
      */
     public ChessPosition getEndPosition() {
-
         return endposition;
     }
 
@@ -40,10 +39,7 @@ public class ChessMove {
      * @return Type of piece to promote a pawn to, or null if no promotion
      */
     public ChessPiece.PieceType getPromotionPiece() {
-        return chesspiece;
-    }
-    public boolean is_move_valid_Rook(){
-
+        return promotion;
     }
 }
 
