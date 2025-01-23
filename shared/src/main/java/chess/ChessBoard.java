@@ -33,16 +33,16 @@ public class ChessBoard {
         for (int i = 0; i < 8; i++) {
             chess_board[1][i]= new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.PAWN);
         }
-        chess_board[7][0] = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.ROOK);
-        chess_board[7][1] = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.KNIGHT);
-        chess_board[7][2] = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.BISHOP);
-        chess_board[7][3] = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.QUEEN);
-        chess_board[7][4] = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.KING);
-        chess_board[7][5] = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.BISHOP);
-        chess_board[7][6] = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.KNIGHT);
-        chess_board[7][7] = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.ROOK);
+        chess_board[7][0] = new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.ROOK);
+        chess_board[7][1] = new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.KNIGHT);
+        chess_board[7][2] = new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.BISHOP);
+        chess_board[7][3] = new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.QUEEN);
+        chess_board[7][4] = new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.KING);
+        chess_board[7][5] = new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.BISHOP);
+        chess_board[7][6] = new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.KNIGHT);
+        chess_board[7][7] = new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.ROOK);
         for (int i = 0; i < 8; i++) {
-            chess_board[6][i]= new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.PAWN);
+            chess_board[6][i]= new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.PAWN);
         }
     }
     public void addPiece(ChessPosition position, ChessPiece piece) {
@@ -76,14 +76,61 @@ public class ChessBoard {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
+//            System.out.println("expected"+given.chess_board[i][j]);
+//                    System.out.println(chess_board[i][j]);
+            System.out.println("not true");
             return false;
         }
-        ChessBoard that = (ChessBoard) o;
-        return Objects.deepEquals(chess_board, that.chess_board);
+//        ChessBoard that = (ChessBoard) o;
+//        System.out.println(that);
+//        System.out.println(this);
+//        return Objects.deepEquals(that, this);
+        ChessBoard given=(ChessBoard) o;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (given.chess_board[i][j]==null && chess_board[i][j]!=null){
+                    return false;
+                }
+                else if(given.chess_board[i][j]!=null && chess_board[i][j]==null){
+                    return false;
+                }
+                else if (given.chess_board[i][j]==null && chess_board[i][j]==null) {
+                }
+                else if (!given.chess_board[i][j].toString().equals(chess_board[i][j].toString())){
+                    System.out.println("expected"+given.chess_board[i][j]);
+                    System.out.println(chess_board[i][j]);
+                    System.out.println("false");
+                    return false;
+                }
+
+                }
+            }
+
+        System.out.println("true");
+        return true;
     }
 
     @Override
     public int hashCode() {
         return Arrays.deepHashCode(chess_board);
+    }
+
+    @Override
+    public String toString(){
+        String board="\n";
+        for (int i=0;i<8;i++){
+            String line="";
+            for (int j=0;j<8;j++){
+                if (chess_board[i][j]==null){
+                    line=line+"|  |";
+                }
+                else{
+                    line=line+"|"+chess_board[i][j].toString()+"|";
+                }
+
+            }
+            board=board+line+"\n";
+        }
+        return board;
     }
 }

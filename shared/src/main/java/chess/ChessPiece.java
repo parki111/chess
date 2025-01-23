@@ -44,10 +44,14 @@ public class ChessPiece {
      * @return which type of chess piece this piece is
      */
     public PieceType getPieceType() {
-
         return pieceType;
     }
 
+    public String toString(){
+        char color=teamColor.toString().charAt(0);
+        char type=pieceType.toString().charAt(0);
+        return (""+color+type);
+    }
     /**
      * Calculates all the positions a chess piece can move to
      * Does not take into account moves that are illegal due to leaving the king in
