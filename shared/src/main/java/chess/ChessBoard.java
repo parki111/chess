@@ -17,10 +17,10 @@ public class ChessBoard {
 
     /**
      * Adds a chess piece to the chessboard
-     *
-     * @param position where to add the piece to
-     * @param piece    the piece to add
-     */
+    // *
+     * //@param //position where to add the piece to
+     * //@param //piece    the piece to add
+     **/
     public void initializeChessBoard() {
         chess_board[0][0] = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.ROOK);
         chess_board[0][1] = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.KNIGHT);
