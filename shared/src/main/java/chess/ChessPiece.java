@@ -75,10 +75,25 @@ public class ChessPiece {
             Bishop bishop = new Bishop(board,myPosition);
             hasher=bishop.pieceMoves(board,myPosition);
         }
-        if (new_piece == PieceType.QUEEN)
+        else if (new_piece == PieceType.QUEEN)
         {
             Queen queen = new Queen(board,myPosition);
             hasher=queen.pieceMoves(board,myPosition);
+        }
+        else if (new_piece == PieceType.KING)
+        {
+            King king = new King(board,myPosition);
+            hasher=king.pieceMoves(board,myPosition);
+        }
+        else if (new_piece == PieceType.KNIGHT)
+        {
+            Knight knight = new Knight(board,myPosition);
+            hasher=knight.pieceMoves(board,myPosition);
+        }
+        else if (new_piece == PieceType.PAWN)
+        {
+            Pawn pawn = new Pawn(board,myPosition);
+            hasher=pawn.pieceMoves(board,myPosition);
         }
         return hasher;
     }
@@ -98,7 +113,11 @@ public class ChessPiece {
             if (other_piece != null) {
                 if (other_piece.getTeamColor() == piece_color) {
                     break;
-                } else {
+                }
+                else if (piece.pieceType == PieceType.PAWN){
+                    break;
+                }
+                else {
                     ChessMove move = new ChessMove(start_pos, new ChessPosition(i, j), null);
                     piecemoves_1direction.add(move);
                     break;
@@ -112,7 +131,9 @@ public class ChessPiece {
                 i=multiplier * x_dir +row;
                 j=multiplier * y_dir +column;
             }
-
+            if (piece.pieceType==PieceType.KING || piece.pieceType==PieceType.KNIGHT){
+                break;
+            }
         }
         return piecemoves_1direction;
     }
