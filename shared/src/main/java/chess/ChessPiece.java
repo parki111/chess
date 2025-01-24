@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * Represents a single chess piece
@@ -62,4 +63,29 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         throw new RuntimeException("Not implemented");
     }
-}
+
+    public ChessMove chessmove_direction(int x_dir,int y_dir,ChessPosition start_pos,ChessBoard board) {         //Queen,bishop,rook
+        int row = start_pos.getRow();
+        int column = start_pos.getColumn();
+        HashSet<ChessMove> piecemoves_1direction = new HashSet();
+        ChessPiece piece = board.getPiece(start_pos);
+        ChessGame.TeamColor piece_color = piece.getTeamColor();
+        int multiplier=0;
+        int i=multiplier*x_dir+row;
+        int j=multiplier*y_dir+column;
+        while (1<=i && i<=8 && 1<=j && j<=8) {
+            ChessPiece other_piece = board.getPiece(new ChessPosition(i, j));
+            if (piece != null) {
+                if (other_piece.getTeamColor() == piece_color) {
+                    break;
+                }
+                 else {
+                    ChessMove move = new ChessMove(start_pos, new ChessPosition(row, i), null);
+                    piecemoves_1direction.add(move);
+                    break;
+                }}
+            }
+
+        }
+
+    }

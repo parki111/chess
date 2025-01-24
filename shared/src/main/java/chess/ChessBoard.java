@@ -60,6 +60,7 @@ public class ChessBoard {
             return(ChessPiece) null;
         }
         else{
+            System.out.println(this);
             return (ChessPiece) chess_board[position.getRow()-1][position.getColumn()-1];
         }
     }
