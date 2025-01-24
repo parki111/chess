@@ -70,6 +70,16 @@ public class ChessPiece {
             Rook rook = new Rook(board,myPosition);
             hasher=rook.pieceMoves(board,myPosition);
         }
+        if (new_piece == PieceType.BISHOP)
+        {
+            Bishop bishop = new Bishop(board,myPosition);
+            hasher=bishop.pieceMoves(board,myPosition);
+        }
+        if (new_piece == PieceType.QUEEN)
+        {
+            Queen queen = new Queen(board,myPosition);
+            hasher=queen.pieceMoves(board,myPosition);
+        }
         return hasher;
     }
 
