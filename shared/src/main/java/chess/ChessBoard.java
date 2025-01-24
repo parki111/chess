@@ -57,7 +57,7 @@ public class ChessBoard {
      */
     public ChessPiece getPiece(ChessPosition position) {
         if (chess_board[position.getRow()-1][position.getColumn()-1]==null){
-            return(ChessPiece) null;
+            return null;
         }
         else{
             System.out.println(this);
