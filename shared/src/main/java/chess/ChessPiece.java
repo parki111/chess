@@ -98,23 +98,24 @@ public class ChessPiece {
         return hasher;
     }
 
-    public HashSet<ChessMove> chessmove_direction(int x_dir, int y_dir, ChessPosition start_pos, ChessBoard board) {         //Queen,bishop,rook
+    public HashSet<ChessMove> chessmove_direction(int y_dir, int x_dir, ChessPosition start_pos, ChessBoard board) {         //Queen,bishop,rook
         int row = start_pos.getRow();
         int column = start_pos.getColumn();
         HashSet<ChessMove> piecemoves_1direction = new HashSet();
         ChessPiece piece = board.getPiece(start_pos);
         ChessGame.TeamColor piece_color = piece.getTeamColor();
         int multiplier = 1;
-        int i = multiplier * x_dir + row;
-        int j = multiplier * y_dir + column;
+        int i = multiplier * y_dir + row;
+        int j = multiplier * x_dir + column;
         while (1 <= i && i <= 8 && 1 <= j && j <= 8) {
 
             ChessPiece other_piece = board.getPiece(new ChessPosition(i, j));
+
             if (other_piece != null) {
                 if (other_piece.getTeamColor() == piece_color) {
                     break;
                 }
-                else if (piece.pieceType == PieceType.PAWN){
+                if (piece.pieceType == PieceType.PAWN){
                     break;
                 }
                 else {
@@ -125,11 +126,27 @@ public class ChessPiece {
             }
             else
             {
+                if (piece.pieceType == PieceType.PAWN)    {
+                    if(row==7) {
+                        ChessMove move = new ChessMove(start_pos, new ChessPosition(i, j), PieceType.QUEEN);
+                        ChessMove move1 = new ChessMove(start_pos, new ChessPosition(i, j), PieceType.KNIGHT);
+                        ChessMove move2 = new ChessMove(start_pos, new ChessPosition(i, j), PieceType.ROOK);
+                        ChessMove move3 = new ChessMove(start_pos, new ChessPosition(i, j), PieceType.BISHOP);
+                        piecemoves_1direction.add(move);
+                        piecemoves_1direction.add(move1);
+                        piecemoves_1direction.add(move2);
+                        piecemoves_1direction.add(move3);
+                    }
+                    else{
+                    ChessMove move = new ChessMove(start_pos, new ChessPosition(i, j), null);
+                    piecemoves_1direction.add(move);
+                    }
+                }
                 ChessMove move = new ChessMove(start_pos, new ChessPosition(i, j), null);
                 piecemoves_1direction.add(move);
                 multiplier=multiplier+1;
-                i=multiplier * x_dir +row;
-                j=multiplier * y_dir +column;
+                i=multiplier * y_dir +row;
+                j=multiplier * x_dir +column;
             }
             if (piece.pieceType==PieceType.KING || piece.pieceType==PieceType.KNIGHT){
                 break;
