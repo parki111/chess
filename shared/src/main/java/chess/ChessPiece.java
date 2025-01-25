@@ -107,7 +107,8 @@ public class ChessPiece {
         int multiplier = 1;
         int i = multiplier * y_dir + row;
         int j = multiplier * x_dir + column;
-        int pawn_2spaces=1;
+        int pawn_2spaces=0;
+        if ((row==7 && piece.getTeamColor() == ChessGame.TeamColor.BLACK) || (row==2 && piece.getTeamColor() == ChessGame.TeamColor.WHITE)){pawn_2spaces=1;}
         boolean promotion = ((i==1 && piece.getTeamColor() == ChessGame.TeamColor.BLACK) || (i==8 && piece.getTeamColor() == ChessGame.TeamColor.WHITE));
         while (1 <= i && i <= 8 && 1 <= j && j <= 8) {
 
@@ -179,11 +180,18 @@ public class ChessPiece {
                 else{
                         piecemoves_1direction.add(move);
                     }
-
-
+                if (pawn_2spaces==1){
+                    multiplier+=1;
+                    i = multiplier * y_dir + row;
+                    j = multiplier * x_dir + column;
+                    pawn_2spaces++;
+                    continue;
+                }
+                break;
 
             }
-            break;
+
+
         }
         return piecemoves_1direction;
     }
