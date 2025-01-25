@@ -107,7 +107,10 @@ public class ChessPiece {
         int multiplier = 1;
         int i = multiplier * y_dir + row;
         int j = multiplier * x_dir + column;
+        int pawn_2spaces=1;
+        boolean promotion = ((i==1 && piece.getTeamColor() == ChessGame.TeamColor.BLACK) || (i==8 && piece.getTeamColor() == ChessGame.TeamColor.WHITE));
         while (1 <= i && i <= 8 && 1 <= j && j <= 8) {
+
 
             ChessPiece other_piece = board.getPiece(new ChessPosition(i, j));
 
@@ -118,11 +121,19 @@ public class ChessPiece {
                 if (piece.pieceType == PieceType.PAWN && x_dir==0){
                     break;
                 }
-                else {
+                else if (piece.pieceType ==PieceType.PAWN && promotion)
+                {
+
+                }
+                else{
+
                     ChessMove move = new ChessMove(start_pos, new ChessPosition(i, j), null);
                     piecemoves_1direction.add(move);
                     break;
                 }
+            }
+            else if (piece.pieceType == PieceType.PAWN && x_dir!=0){
+                break;
             }
             else
             {
@@ -142,15 +153,37 @@ public class ChessPiece {
 //                    piecemoves_1direction.add(move);
 //                    }
 //                }
-                ChessMove move = new ChessMove(start_pos, new ChessPosition(i, j), null);
-                piecemoves_1direction.add(move);
-                multiplier=multiplier+1;
-                i=multiplier * y_dir +row;
-                j=multiplier * x_dir +column;
+                if (piece.pieceType!=PieceType.PAWN) {
+                    ChessMove move = new ChessMove(start_pos, new ChessPosition(i, j), null);
+                    piecemoves_1direction.add(move);
+                    multiplier = multiplier + 1;
+                    i = multiplier * y_dir + row;
+                    j = multiplier * x_dir + column;
+                }
             }
-            if (piece.pieceType==PieceType.KING || piece.pieceType==PieceType.KNIGHT || piece.pieceType==PieceType.PAWN){
+            if (piece.pieceType==PieceType.KING || piece.pieceType==PieceType.KNIGHT){
                 break;
             }
+            else if(piece.pieceType==PieceType.PAWN){
+                ChessMove move = new ChessMove(start_pos, new ChessPosition(i, j), null);
+                ChessMove move1 = new ChessMove(start_pos, new ChessPosition(i, j), PieceType.KNIGHT);
+                ChessMove move2 = new ChessMove(start_pos, new ChessPosition(i, j), PieceType.ROOK);
+                ChessMove move3 = new ChessMove(start_pos, new ChessPosition(i, j), PieceType.BISHOP);
+                ChessMove move4 = new ChessMove(start_pos, new ChessPosition(i, j), PieceType.QUEEN);
+                if (promotion==true) {
+                    piecemoves_1direction.add(move1);
+                    piecemoves_1direction.add(move2);
+                    piecemoves_1direction.add(move3);
+                    piecemoves_1direction.add(move4);
+                }
+                else{
+                        piecemoves_1direction.add(move);
+                    }
+
+
+
+            }
+            break;
         }
         return piecemoves_1direction;
     }

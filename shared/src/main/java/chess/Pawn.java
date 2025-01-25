@@ -16,7 +16,20 @@ public class Pawn implements PieceMovesCalculator{
         HashSet <ChessMove> pawn_moves=new HashSet();
         ChessPosition start_pos=new ChessPosition(row,column);
         ChessPiece pawn = board.getPiece(start_pos);
-        pawn_moves.addAll(pawn.chessmove_direction(1, 0, start_pos, board));
+        if (pawn.getTeamColor()== ChessGame.TeamColor.BLACK)
+        {
+            pawn_moves.addAll(pawn.chessmove_direction(-1, 0, start_pos, board));
+            pawn_moves.addAll(pawn.chessmove_direction(-1, 1, start_pos, board));
+            pawn_moves.addAll(pawn.chessmove_direction(-1, -1, start_pos, board));
+
+        }
+        else{
+            pawn_moves.addAll(pawn.chessmove_direction(1, 0, start_pos, board));
+            pawn_moves.addAll(pawn.chessmove_direction(1, 1, start_pos, board));
+            pawn_moves.addAll(pawn.chessmove_direction(1, -1, start_pos, board));
+        }
+
+
 //        if (row<8 && column<8){
 //            if (board.getPiece(new ChessPosition(row+1,column+1))!=null){
 //                if (board.getPiece(new ChessPosition(row+1,column+1)).getTeamColor()!=pawn.getTeamColor()){
