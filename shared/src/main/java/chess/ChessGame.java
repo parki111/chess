@@ -52,6 +52,17 @@ public class ChessGame {
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece= chessBoard.getPiece(startPosition);
         Collection<ChessMove> hasher = piece.pieceMoves(chessBoard,startPosition);
+        ChessBoard old_board = chessBoard;
+        for (ChessMove move : hasher)
+        {
+            chessBoard.addPiece(move.getStartPosition(),null);
+            chessBoard.addPiece(move.getEndPosition(),piece);
+            if (isInCheck(piece.getTeamColor()))
+            {
+                hasher.remove(move);
+            }
+            chessBoard=old_board;
+        }
         return hasher;
     }
 
