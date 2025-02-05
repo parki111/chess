@@ -111,7 +111,7 @@ public class ChessGame {
             for (int j=1;j<9;j++)
             {
                 if (chessBoard.getPiece(new ChessPosition(i,j)).getTeamColor()!=teamColor
-                 && chessBoard.getPiece(new ChessPosition(i,j)).getTeamColor()!=null)
+                 && chessBoard.getPiece(new ChessPosition(i,j))!=null)
                 {
                     ChessMove move = new ChessMove(new ChessPosition(i,j),king_pos,null);
                     ChessMove promotion = new ChessMove(new ChessPosition(i,j),king_pos, ChessPiece.PieceType.QUEEN);
