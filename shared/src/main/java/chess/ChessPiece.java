@@ -138,22 +138,6 @@ public class ChessPiece {
             }
             else
             {
-//                if (piece.pieceType == PieceType.PAWN)    {
-//                    if(row==7) {
-//                        ChessMove move = new ChessMove(start_pos, new ChessPosition(i, j), PieceType.QUEEN);
-//                        ChessMove move1 = new ChessMove(start_pos, new ChessPosition(i, j), PieceType.KNIGHT);
-//                        ChessMove move2 = new ChessMove(start_pos, new ChessPosition(i, j), PieceType.ROOK);
-//                        ChessMove move3 = new ChessMove(start_pos, new ChessPosition(i, j), PieceType.BISHOP);
-//                        piecemoves_1direction.add(move);
-//                        piecemoves_1direction.add(move1);
-//                        piecemoves_1direction.add(move2);
-//                        piecemoves_1direction.add(move3);
-//                    }
-//                    else{
-//                    ChessMove move = new ChessMove(start_pos, new ChessPosition(i, j), null);
-//                    piecemoves_1direction.add(move);
-//                    }
-//                }
                 if (piece.pieceType!=PieceType.PAWN) {
                     ChessMove move = new ChessMove(start_pos, new ChessPosition(i, j), null);
                     piecemoves_1direction.add(move);

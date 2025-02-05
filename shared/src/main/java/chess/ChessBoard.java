@@ -14,7 +14,6 @@ public class ChessBoard {
     public ChessBoard() {
         chess_board=new Object[8][8];
     }
-
     /**
      * Adds a chess piece to the chessboard
     // *
