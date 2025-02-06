@@ -98,27 +98,33 @@ public class ChessGame {
         {
             for (int j=1;j<9;j++)
             {
-                if (chessBoard.getPiece(new ChessPosition(i,j)).getPieceType() == ChessPiece.PieceType.KING
-                 && chessBoard.getPiece(new ChessPosition(i,j)).getTeamColor()== teamColor)
-                {
-                    king_pos = new ChessPosition(i,j);
-                    break row;
+                if (chessBoard.getPiece(new ChessPosition(i,j))!=null){
+                    if (chessBoard.getPiece(new ChessPosition(i,j)).getPieceType() == ChessPiece.PieceType.KING
+                            && chessBoard.getPiece(new ChessPosition(i,j)).getTeamColor()== teamColor)
+                    {
+                        king_pos = new ChessPosition(i,j);
+                        break row;
+                    }
                 }
+
             }
         };
         for (int i=1;i<9;i++)
         {
             for (int j=1;j<9;j++)
             {
-                if (chessBoard.getPiece(new ChessPosition(i,j)).getTeamColor()!=teamColor
-                 && chessBoard.getPiece(new ChessPosition(i,j))!=null)
+                if (chessBoard.getPiece(new ChessPosition(i,j))!=null)
                 {
-                    ChessMove move = new ChessMove(new ChessPosition(i,j),king_pos,null);
-                    ChessMove promotion = new ChessMove(new ChessPosition(i,j),king_pos, ChessPiece.PieceType.QUEEN);
-                    if (chessBoard.getPiece(new ChessPosition(i,j)).pieceMoves(chessBoard,new ChessPosition(i,j)).contains(move)
-                    ||  chessBoard.getPiece(new ChessPosition(i,j)).pieceMoves(chessBoard,new ChessPosition(i,j)).contains(promotion))
+                    if (chessBoard.getPiece(new ChessPosition(i, j)).getTeamColor() != teamColor
+                            && chessBoard.getPiece(new ChessPosition(i, j)) != null)
                     {
-                        return true;
+                        ChessMove move = new ChessMove(new ChessPosition(i, j), king_pos, null);
+                        ChessMove promotion = new ChessMove(new ChessPosition(i, j), king_pos, ChessPiece.PieceType.QUEEN);
+                        if (chessBoard.getPiece(new ChessPosition(i, j)).pieceMoves(chessBoard, new ChessPosition(i, j)).contains(move)
+                                || chessBoard.getPiece(new ChessPosition(i, j)).pieceMoves(chessBoard, new ChessPosition(i, j)).contains(promotion))
+                        {
+                            return true;
+                        }
                     }
                 }
             }
