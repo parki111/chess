@@ -149,8 +149,9 @@ public class ChessGame {
                     {
                         ChessMove move = new ChessMove(new ChessPosition(i, j), king_pos, null);
                         ChessMove promotion = new ChessMove(new ChessPosition(i, j), king_pos, ChessPiece.PieceType.QUEEN);
-                        if (chessBoard.getPiece(new ChessPosition(i, j)).pieceMoves(chessBoard, new ChessPosition(i, j)).contains(move)
-                                || chessBoard.getPiece(new ChessPosition(i, j)).pieceMoves(chessBoard, new ChessPosition(i, j)).contains(promotion))
+                        Collection<ChessMove> collect =chessBoard.getPiece(new ChessPosition(i, j)).pieceMoves(chessBoard, new ChessPosition(i, j));
+                        if (collect.contains(move)
+                                || collect.contains(promotion))
                         {
                             return true;
                         }
