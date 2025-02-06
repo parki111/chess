@@ -93,7 +93,8 @@ public class ChessGame {
         {
             if(whose_turn==chessBoard.getPiece(pos).getTeamColor()) {
                 if (move.getPromotionPiece() != null) {
-                    this.chessBoard.addPiece(end_pos, new ChessPiece(whose_turn, move.getPromotionPiece()));
+                    ChessPiece promotion_piece=new ChessPiece(whose_turn, move.getPromotionPiece());
+                    this.chessBoard.addPiece(end_pos, promotion_piece);
                 } else {
                     this.chessBoard.addPiece(end_pos, chessBoard.getPiece(pos));
                 }
