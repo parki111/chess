@@ -46,6 +46,11 @@ public class ChessBoard {
     }
     public void addPiece(ChessPosition position, ChessPiece piece) {
         chess_board[position.getRow()-1][position.getColumn()-1] = piece;
+        if (piece!=null){
+            System.out.println(this);
+            System.out.println("Added piece!");
+        }
+
     }
     /**
      * Gets a chess piece on the chessboard
@@ -59,7 +64,7 @@ public class ChessBoard {
             return null;
         }
         else{
-            System.out.println(this);
+            //System.out.println(this);
             return (ChessPiece) chess_board[position.getRow()-1][position.getColumn()-1];
         }
     }
@@ -78,6 +83,8 @@ public class ChessBoard {
         if (o == null || getClass() != o.getClass()) {
 //            System.out.println("expected"+given.chess_board[i][j]);
 //                    System.out.println(chess_board[i][j]);
+            System.out.println(this);
+            System.out.println(o);
             System.out.println("not true");
             return false;
         }

@@ -15,7 +15,7 @@ public class ChessGame {
     public ChessGame() {
         whose_turn=TeamColor.WHITE;
         chessBoard = new ChessBoard();
-
+        chessBoard.initializeChessBoard();
     }
 
     /**
@@ -50,21 +50,28 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        ChessPiece piece= chessBoard.getPiece(startPosition);
-
-        Collection<ChessMove> hasher = piece.pieceMoves(chessBoard,startPosition);
-        ChessBoard old_board = chessBoard;
-
-        for (ChessMove move : hasher)
+        Collection<ChessMove> hasher = new HashSet<>();
+        ChessPiece piece = chessBoard.getPiece(startPosition);
+        if (piece!=null)
         {
-            chessBoard.addPiece(move.getStartPosition(),null);
-            chessBoard.addPiece(move.getEndPosition(),piece);
-            if (isInCheck(piece.getTeamColor()))
-            {
-                hasher.remove(move);
-            }
-            chessBoard=old_board;
+            System.out.println("Not null");
+                for (ChessMove move : piece.pieceMoves(chessBoard, startPosition)) {
+                    System.out.println(move);
+                    ChessPiece move_to_piece = chessBoard.getPiece(move.getEndPosition());
+                    chessBoard.addPiece(move.getStartPosition(), null);
+                    chessBoard.addPiece(move.getEndPosition(), piece);
+                    if (isInCheck(piece.getTeamColor())) {
+                        System.out.println("removed = true");
+                    } else {
+                        hasher.add(move);
+                        System.out.println("removed = false");
+                    }
+                    chessBoard.addPiece(move.getEndPosition(), move_to_piece);
+                    chessBoard.addPiece(move.getStartPosition(), piece);
+                }
         }
+
+
         return hasher;
     }
 
@@ -76,17 +83,27 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessPosition pos = move.getStartPosition();
+        if (chessBoard.getPiece(pos)!=null) {
+            if (whose_turn != chessBoard.getPiece(pos).getTeamColor()) {
+                throw new InvalidMoveException("WRONG");
+            }
+        }
         ChessPosition end_pos = move.getEndPosition();
         if (this.validMoves(pos).contains(move))
         {
-            this.chessBoard.addPiece(end_pos,chessBoard.getPiece(pos));
-            this.chessBoard.addPiece(pos,null);
-            if (getTeamTurn()==TeamColor.WHITE)
-            {
-                setTeamTurn(TeamColor.BLACK);
-            }
-            else{
-                setTeamTurn(TeamColor.WHITE);
+            if(whose_turn==chessBoard.getPiece(pos).getTeamColor()) {
+                if (move.getPromotionPiece() != null) {
+                    this.chessBoard.addPiece(end_pos, new ChessPiece(whose_turn, move.getPromotionPiece()));
+                } else {
+                    this.chessBoard.addPiece(end_pos, chessBoard.getPiece(pos));
+                }
+
+                this.chessBoard.addPiece(pos, null);
+                if (getTeamTurn() == TeamColor.WHITE) {
+                    setTeamTurn(TeamColor.BLACK);
+                } else {
+                    setTeamTurn(TeamColor.WHITE);
+                }
             }
         }
         else{
@@ -102,6 +119,7 @@ public class ChessGame {
      */
     public boolean isInCheck(TeamColor teamColor) {
         ChessPosition king_pos=new ChessPosition(1,1);
+        System.out.println(teamColor);
         row:
         for (int i=1;i<9;i++)
         {
@@ -109,9 +127,11 @@ public class ChessGame {
             {
                 if (chessBoard.getPiece(new ChessPosition(i,j))!=null){
                     if (chessBoard.getPiece(new ChessPosition(i,j)).getPieceType() == ChessPiece.PieceType.KING
-                            && chessBoard.getPiece(new ChessPosition(i,j)).getTeamColor()== teamColor)
+                            && chessBoard.getPiece(new ChessPosition(i,j)).getTeamColor() == teamColor)
                     {
                         king_pos = new ChessPosition(i,j);
+                        System.out.println("Row: "+king_pos.getRow());
+                        System.out.println("Column: "+king_pos.getColumn());
                         break row;
                     }
                 }
@@ -149,7 +169,26 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        if (isInCheck(teamColor))
+        {
+            for (int i=1;i<9;i++) {
+                for (int j = 1; j < 9; j++) {
+                    ChessPiece piece = chessBoard.getPiece(new ChessPosition(i,j));
+                    if (piece!=null)
+                    {
+                        if (piece.getTeamColor()==teamColor)
+                        {
+                            if (!validMoves(new ChessPosition(i,j)).isEmpty())
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -160,7 +199,29 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        if (isInCheck(teamColor))
+        {
+            return false;
+        }
+        else
+        {
+            for (int i=1;i<9;i++) {
+                for (int j = 1; j < 9; j++) {
+                    ChessPiece piece = chessBoard.getPiece(new ChessPosition(i,j));
+                    if (piece!=null)
+                    {
+                        if (piece.getTeamColor()==teamColor)
+                        {
+                            if (!validMoves(new ChessPosition(i,j)).isEmpty())
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     /**
