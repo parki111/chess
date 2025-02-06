@@ -51,8 +51,10 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece= chessBoard.getPiece(startPosition);
+
         Collection<ChessMove> hasher = piece.pieceMoves(chessBoard,startPosition);
         ChessBoard old_board = chessBoard;
+
         for (ChessMove move : hasher)
         {
             chessBoard.addPiece(move.getStartPosition(),null);
@@ -79,6 +81,13 @@ public class ChessGame {
         {
             this.chessBoard.addPiece(end_pos,chessBoard.getPiece(pos));
             this.chessBoard.addPiece(pos,null);
+            if (getTeamTurn()==TeamColor.WHITE)
+            {
+                setTeamTurn(TeamColor.BLACK);
+            }
+            else{
+                setTeamTurn(TeamColor.WHITE);
+            }
         }
         else{
             throw new InvalidMoveException("WRONG");
