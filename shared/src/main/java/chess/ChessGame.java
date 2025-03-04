@@ -55,20 +55,20 @@ public class ChessGame {
         if (piece!=null)
         {
             System.out.println("Not null");
-                for (ChessMove move : piece.pieceMoves(chessBoard, startPosition)) {
-                    System.out.println(move);
-                    ChessPiece moveToPiece = chessBoard.getPiece(move.getEndPosition());
-                    chessBoard.addPiece(move.getStartPosition(), null);
-                    chessBoard.addPiece(move.getEndPosition(), piece);
-                    if (isInCheck(piece.getTeamColor())) {
-                        System.out.println("removed = true");
-                    } else {
-                        hasher.add(move);
-                        System.out.println("removed = false");
-                    }
-                    chessBoard.addPiece(move.getEndPosition(), moveToPiece);
-                    chessBoard.addPiece(move.getStartPosition(), piece);
+            for (ChessMove move : piece.pieceMoves(chessBoard, startPosition)) {
+                System.out.println(move);
+                ChessPiece moveToPiece = chessBoard.getPiece(move.getEndPosition());
+                chessBoard.addPiece(move.getStartPosition(), null);
+                chessBoard.addPiece(move.getEndPosition(), piece);
+                if (isInCheck(piece.getTeamColor())) {
+                    System.out.println("removed = true");
+                } else {
+                    hasher.add(move);
+                    System.out.println("removed = false");
                 }
+                chessBoard.addPiece(move.getEndPosition(), moveToPiece);
+                chessBoard.addPiece(move.getStartPosition(), piece);
+            }
         }
 
 
@@ -143,19 +143,17 @@ public class ChessGame {
         {
             for (int j=1;j<9;j++)
             {
-                if (chessBoard.getPiece(new ChessPosition(i,j))!=null)
+                if (chessBoard.getPiece(new ChessPosition(i,j))!=null &&
+                        chessBoard.getPiece(new ChessPosition(i, j)).getTeamColor() != teamColor
+                        && chessBoard.getPiece(new ChessPosition(i, j)) != null)
                 {
-                    if (chessBoard.getPiece(new ChessPosition(i, j)).getTeamColor() != teamColor
-                            && chessBoard.getPiece(new ChessPosition(i, j)) != null)
+                    ChessMove move = new ChessMove(new ChessPosition(i, j), kingPos, null);
+                    ChessMove promotion = new ChessMove(new ChessPosition(i, j), kingPos, ChessPiece.PieceType.QUEEN);
+                    Collection<ChessMove> collect =chessBoard.getPiece(new ChessPosition(i, j)).pieceMoves(chessBoard, new ChessPosition(i, j));
+                    if (collect.contains(move)
+                            || collect.contains(promotion))
                     {
-                        ChessMove move = new ChessMove(new ChessPosition(i, j), kingPos, null);
-                        ChessMove promotion = new ChessMove(new ChessPosition(i, j), kingPos, ChessPiece.PieceType.QUEEN);
-                        Collection<ChessMove> collect =chessBoard.getPiece(new ChessPosition(i, j)).pieceMoves(chessBoard, new ChessPosition(i, j));
-                        if (collect.contains(move)
-                                || collect.contains(promotion))
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
             }
@@ -164,6 +162,18 @@ public class ChessGame {
 
     }
 
+    public boolean checkMateHelper(TeamColor teamColor){
+        for (int i=1;i<9;i++) {
+            for (int j = 1; j < 9; j++) {
+                ChessPiece piece = chessBoard.getPiece(new ChessPosition(i,j));
+                if (piece!=null && piece.getTeamColor()==teamColor && !validMoves(new ChessPosition(i,j)).isEmpty())
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
     /**
      * Determines if the given team is in checkmate
      *
@@ -173,22 +183,7 @@ public class ChessGame {
     public boolean isInCheckmate(TeamColor teamColor) {
         if (isInCheck(teamColor))
         {
-            for (int i=1;i<9;i++) {
-                for (int j = 1; j < 9; j++) {
-                    ChessPiece piece = chessBoard.getPiece(new ChessPosition(i,j));
-                    if (piece!=null)
-                    {
-                        if (piece.getTeamColor()==teamColor)
-                        {
-                            if (!validMoves(new ChessPosition(i,j)).isEmpty())
-                            {
-                                return false;
-                            }
-                        }
-                    }
-                }
-            }
-            return true;
+            return checkMateHelper(teamColor);
         }
         return false;
     }
@@ -207,24 +202,10 @@ public class ChessGame {
         }
         else
         {
-            for (int i=1;i<9;i++) {
-                for (int j = 1; j < 9; j++) {
-                    ChessPiece piece = chessBoard.getPiece(new ChessPosition(i,j));
-                    if (piece!=null)
-                    {
-                        if (piece.getTeamColor()==teamColor)
-                        {
-                            if (!validMoves(new ChessPosition(i,j)).isEmpty())
-                            {
-                                return false;
-                            }
-                        }
-                    }
-                }
-            }
+            return checkMateHelper(teamColor);
         }
-        return true;
     }
+
 
     /**
      * Sets this game's chessboard with a given board
