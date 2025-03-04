@@ -17,7 +17,8 @@ public class UserServices {
         this.userDAO=userDAO;
     }
     public RegisterResult register(RegisterRequest registerRequest) throws ResponseException {
-        if (userDAO.getUserData(registerRequest.username())==null && !Objects.equals(registerRequest.username(), "")){
+        if (userDAO.getUserData(registerRequest.username())==null && !Objects.equals(registerRequest.username(), "")
+        &&!Objects.equals(registerRequest.password(), "") && !Objects.equals(registerRequest.email(), "")){
             userDAO.createUser(new UserData(registerRequest.username(),registerRequest.password(),registerRequest.email()));
             String authToken=UUID.randomUUID().toString();
             authDAO.addAuthData(new AuthData(authToken, registerRequest.username()));
