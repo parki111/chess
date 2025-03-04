@@ -26,7 +26,7 @@ public class MemoryUserData implements UserDAO {
             return users.get(username);
         }
         else{
-            throw new ResponseException(400,"Error: bad request");
+            return null;
         }
     }
 
