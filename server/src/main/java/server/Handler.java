@@ -63,6 +63,15 @@ public class Handler {
         return new Gson().toJson(createGameResult);
     }
 
+    public Object joinGame(Request request, Response response) throws ResponseException{
+        JoinGameRequestHelper joinGameRequestHelper = new Gson().fromJson(request.body(),JoinGameRequestHelper.class);
+        JoinGameRequest joinGameRequest = new JoinGameRequest(
+                request.headers("Authorization"),joinGameRequestHelper.playerColor(), joinGameRequestHelper.gameID());
+        gameServices.joinGame(joinGameRequest);
+        response.status(200);
+        return "";
+    }
+
     public Object clear(Request request, Response response) throws ResponseException{
         clearService.clear();
         response.status(200);

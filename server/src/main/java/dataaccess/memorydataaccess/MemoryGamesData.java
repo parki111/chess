@@ -6,12 +6,13 @@ import dataaccess.GameDAO;
 import exception.ResponseException;
 import java.util.HashMap;
 import java.util.Collection;
+import java.util.Objects;
 
 public class MemoryGamesData implements GameDAO {
     HashMap<Integer,GameData> games = new HashMap<>();
 
     public int createGame(String gameName) throws ResponseException{
-        GameData game = new GameData(games.size()+1,"","",gameName,null);
+        GameData game = new GameData(games.size()+1,"","",gameName,new ChessGame());
         games.put(game.gameID(), game);
         return game.gameID();
     }
@@ -28,19 +29,19 @@ public class MemoryGamesData implements GameDAO {
         if (games.containsKey(gameID)) {
             return games.get(gameID);
         }
-        throw new ResponseException(400,"Error: bad request");
+        return null;
     }
 
     public Boolean updateGame(String username, String playerColor, GameData gameData) throws ResponseException{
         GameData  newGame;
-        if (playerColor=="BLACK"){
-            if (gameData.blackUsername()!=null){
+        if (Objects.equals(playerColor, "BLACK")){
+            if (!Objects.equals(gameData.blackUsername(), "")){
                 throw new ResponseException(403,"Error: already taken");
             }
             newGame = new GameData(gameData.gameID(), gameData.whiteUsername(), username, gameData.gameName(), gameData.game());
         }
-        else if (playerColor=="WHITE"){
-            if (gameData.whiteUsername()!=null){
+        else if (Objects.equals(playerColor, "WHITE")){
+            if (!Objects.equals(gameData.whiteUsername(), "")){
                 throw new ResponseException(403,"Error: already taken");
             }
             newGame = new GameData(gameData.gameID(), username, gameData.blackUsername(), gameData.gameName(), gameData.game());
