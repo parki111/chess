@@ -11,16 +11,16 @@ public class King implements PieceMovesCalculator{
     }
     @Override
     public HashSet<ChessMove> pieceMoves(ChessBoard board, ChessPosition position) {
-        int row=position.getRow();
+        int thisRow=position.getRow();
         int column=position.getColumn();
         HashSet <ChessMove> kingMoves=new HashSet();
-        ChessPosition startPos=new ChessPosition(row,column);
+        ChessPosition startPos=new ChessPosition(thisRow,column);
         ChessPiece king = board.getPiece(startPos);
+        kingMoves.addAll(king.chessmoveDirection(-1, -1, startPos, board));
+        kingMoves.addAll(king.chessmoveDirection(1, 0, startPos, board));
         kingMoves.addAll(king.chessmoveDirection(1, 1, startPos, board));
         kingMoves.addAll(king.chessmoveDirection(-1, 1, startPos, board));
         kingMoves.addAll(king.chessmoveDirection(1, -1, startPos, board));
-        kingMoves.addAll(king.chessmoveDirection(-1, -1, startPos, board));
-        kingMoves.addAll(king.chessmoveDirection(1, 0, startPos, board));
         kingMoves.addAll(king.chessmoveDirection(0, 1, startPos, board));
         kingMoves.addAll(king.chessmoveDirection(-1, 0, startPos, board));
         kingMoves.addAll(king.chessmoveDirection(0, -1, startPos, board));

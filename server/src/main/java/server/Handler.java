@@ -70,7 +70,7 @@ public class Handler {
     }
 
     public void exceptionHandler(ResponseException ex, Request req, Response res) {
-        res.status(ex.StatusCode());
+        res.status(ex.thisStatusCode());
         res.body(ex.toJson());
     }
 //    public Object clear(Request request, Response response) throws ResponseException{

@@ -32,23 +32,23 @@ public class MemoryGamesData implements GameDAO {
     }
 
     public Boolean updateGame(String username, String playerColor, GameData gameData) throws ResponseException{
-        GameData  new_game;
+        GameData  newGame;
         if (playerColor=="BLACK"){
             if (gameData.blackUsername()!=null){
                 throw new ResponseException(403,"Error: already taken");
             }
-            new_game = new GameData(gameData.gameID(), gameData.whiteUsername(), username, gameData.gameName(), gameData.game());
+            newGame = new GameData(gameData.gameID(), gameData.whiteUsername(), username, gameData.gameName(), gameData.game());
         }
         else if (playerColor=="WHITE"){
             if (gameData.whiteUsername()!=null){
                 throw new ResponseException(403,"Error: already taken");
             }
-            new_game = new GameData(gameData.gameID(), username, gameData.blackUsername(), gameData.gameName(), gameData.game());
+            newGame = new GameData(gameData.gameID(), username, gameData.blackUsername(), gameData.gameName(), gameData.game());
         }
         else{
             throw new ResponseException(400,"Error: bad request");
         }
-        games.put(gameData.gameID(),new_game);
+        games.put(gameData.gameID(),newGame);
         return Boolean.TRUE;
     }
 
