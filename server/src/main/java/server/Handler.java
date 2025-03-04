@@ -3,6 +3,7 @@ import Request_response.RegisterRequest;
 import Request_response.RegisterResponse;
 import com.google.gson.Gson;
 import dataaccess.AuthDAO;
+import service.ClearService;
 import service.UserServices;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
@@ -11,6 +12,7 @@ import spark.*;
 
 public class Handler {
     UserServices userServices;
+    ClearService clearService;
     GameDAO gameDAO;
     UserDAO userDAO;
     AuthDAO authDAO;
@@ -20,6 +22,7 @@ public class Handler {
         this.userDAO=userDAO;
         this.gameDAO=gameDAO;
         this.userServices=new UserServices(authDAO,userDAO);
+        this.clearService=new ClearService(authDao,userDAO,gameDAO);
     }
 
     public Object register(Request request, Response response) throws ResponseException {
@@ -27,6 +30,12 @@ public class Handler {
         RegisterResponse registerResponse = userServices.register(registerRequest);
         response.status(200);
         return new Gson().toJson(registerResponse);
+    }
+
+    public Object clear(Request request, Response response) throws ResponseException{
+        clearService.clear();
+        response.status(200);
+        return "";
     }
 
     public void exceptionHandler(ResponseException ex, Request req, Response res) {
