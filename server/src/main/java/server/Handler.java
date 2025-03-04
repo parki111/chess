@@ -50,11 +50,19 @@ public class Handler {
         return "";
     }
 
-    public Object listgames(Request request, Response response) throws ResponseException {
+    public Object listGames(Request request, Response response) throws ResponseException {
         ListGamesRequest listGamesRequest = new ListGamesRequest(request.headers("Authorization"));
         ListGamesResult listGamesResult = gameServices.listgames(listGamesRequest);
         response.status(200);
         return new Gson().toJson(listGamesResult);
+    }
+
+    public Object createGame(Request request, Response response) throws ResponseException{
+        CreateGameRequestHelper createGameRequestHelper = new Gson().fromJson(request.body(),CreateGameRequestHelper.class);
+        CreateGameRequest createGameRequest = new CreateGameRequest(request.headers("Authorization"),createGameRequestHelper.gameName());
+        CreateGameResult createGameResult = gameServices.creategame(createGameRequest);
+        response.status(200);
+        return new Gson().toJson(createGameResult);
     }
 
     public Object clear(Request request, Response response) throws ResponseException{

@@ -10,10 +10,10 @@ import java.util.Collection;
 public class MemoryGamesData implements GameDAO {
     HashMap<Integer,GameData> games = new HashMap<>();
 
-    public Boolean createGame(String gameName) throws ResponseException{
-        GameData game = new GameData(games.size(),null,null,gameName,new ChessGame());
+    public int createGame(String gameName) throws ResponseException{
+        GameData game = new GameData(games.size()+1,null,null,gameName,new ChessGame());
         games.put(game.gameID(), game);
-        return Boolean.TRUE;
+        return game.gameID();
     }
 
     public Collection<GameData> listGames() throws ResponseException{

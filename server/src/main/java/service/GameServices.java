@@ -1,8 +1,6 @@
 package service;
 
-import Request_response.ListGamesRequest;
-import Request_response.ListGamesResult;
-import Request_response.LogoutRequest;
+import Request_response.*;
 import dataaccess.AuthDAO;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
@@ -19,6 +17,14 @@ public class GameServices {
     public ListGamesResult listgames(ListGamesRequest listGamesRequest) throws ResponseException {
         if (authDAO.getAuthData(listGamesRequest.authToken()) != null) {
             return new ListGamesResult(gameDAO.listGames());
+        } else {
+            throw new ResponseException(401, "Error: unauthorized");
+        }
+    }
+
+    public CreateGameResult creategame(CreateGameRequest createGameRequest) throws ResponseException {
+        if (authDAO.getAuthData(createGameRequest.authToken()) != null) {
+            return new CreateGameResult(gameDAO.createGame(createGameRequest.gameName()));
         } else {
             throw new ResponseException(401, "Error: unauthorized");
         }
