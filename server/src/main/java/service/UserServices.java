@@ -25,7 +25,7 @@ public class UserServices {
             return new RegisterResult(registerRequest.username(),authToken);
         }
         else{
-            throw new ResponseException(403,"Error: already taken");
+            throw new ResponseException(403,"Error: already taken and bad request");
         }
 
     }
