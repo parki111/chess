@@ -1,6 +1,8 @@
 package server;
+import Request_response.LoginRequest;
+import Request_response.LoginResult;
 import Request_response.RegisterRequest;
-import Request_response.RegisterResponse;
+import Request_response.RegisterResult;
 import com.google.gson.Gson;
 import dataaccess.AuthDAO;
 import service.ClearService;
@@ -27,9 +29,23 @@ public class Handler {
 
     public Object register(Request request, Response response) throws ResponseException {
         RegisterRequest registerRequest = new Gson().fromJson(request.body(), RegisterRequest.class);
-        RegisterResponse registerResponse = userServices.register(registerRequest);
+        RegisterResult registerResult = userServices.register(registerRequest);
         response.status(200);
-        return new Gson().toJson(registerResponse);
+        return new Gson().toJson(registerResult);
+    }
+
+    public Object login(Request request, Response response) throws ResponseException {
+        LoginRequest loginRequest = new Gson().fromJson(request.body(), LoginRequest.class);
+        LoginResult loginResult = userServices.login(loginRequest);
+        response.status(200);
+        return new Gson().toJson(loginResult);
+    }
+
+    public Object logout(Request request, Response response) throws ResponseException {
+        LoginRequest loginRequest = new Gson().fromJson(request.body(), LoginRequest.class);
+        LoginResult loginResult = userServices.login(loginRequest);
+        response.status(200);
+        return new Gson().toJson(loginResult);
     }
 
     public Object clear(Request request, Response response) throws ResponseException{

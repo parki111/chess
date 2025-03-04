@@ -1,12 +1,13 @@
 package service;
 import Model.AuthData;
 import Model.UserData;
+import Request_response.LoginRequest;
+import Request_response.LoginResult;
 import dataaccess.AuthDAO;
 import dataaccess.UserDAO;
 import Request_response.RegisterRequest;
-import Request_response.RegisterResponse;
+import Request_response.RegisterResult;
 import exception.ResponseException;
-import org.eclipse.jetty.server.Authentication;
 
 import java.util.UUID;
 
@@ -17,22 +18,35 @@ public class UserServices {
         this.authDAO=authDAO;
         this.userDAO=userDAO;
     }
-    public RegisterResponse register(RegisterRequest registerRequest) throws ResponseException {
+    public RegisterResult register(RegisterRequest registerRequest) throws ResponseException {
         if (userDAO.getUserData(registerRequest.username())==null){
             userDAO.createUser(new UserData(registerRequest.username(),registerRequest.password(),registerRequest.email()));
             String authToken=UUID.randomUUID().toString();
             authDAO.addAuthData(new AuthData(authToken, registerRequest.username()));
-            return new RegisterResponse(registerRequest.username(),authToken);
+            return new RegisterResult(registerRequest.username(),authToken);
         }
         else{
             throw new ResponseException(403,"Error: already taken");
         }
 
     }
-    public LoginResult login(LoginRequest loginRequest) {
-
+    public LoginResult login(LoginRequest loginRequest) throws ResponseException {
+        UserData userData = userDAO.getUserData(loginRequest.username());
+        if (userData!=null){
+            if (loginRequest.password().equals(userData.password())){
+                String authToken=UUID.randomUUID().toString();
+                authDAO.addAuthData(new AuthData(authToken, loginRequest.username()));
+                return new LoginResult(loginRequest.username(), authToken);
+            }
+            else{
+                throw new ResponseException(401,"Error: unauthorized");
+            }
+        }
+        else{
+            throw new ResponseException(400,"Error: no userdata with given username");
+        }
     }
-    public void logout(LogoutRequest logoutRequest) {
-
-    }
+//    public void logout(LogoutRequest logoutRequest) {
+//
+//    }
 }
