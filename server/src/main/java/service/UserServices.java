@@ -17,15 +17,20 @@ public class UserServices {
         this.userDAO=userDAO;
     }
     public RegisterResult register(RegisterRequest registerRequest) throws ResponseException {
-        if (userDAO.getUserData(registerRequest.username())==null && !Objects.equals(registerRequest.username(), "")
-        &&!Objects.equals(registerRequest.password(), "") && !Objects.equals(registerRequest.email(), "")){
-            userDAO.createUser(new UserData(registerRequest.username(),registerRequest.password(),registerRequest.email()));
-            String authToken=UUID.randomUUID().toString();
-            authDAO.addAuthData(new AuthData(authToken, registerRequest.username()));
-            return new RegisterResult(registerRequest.username(),authToken);
+        if (userDAO.getUserData(registerRequest.username())==null){
+            if (!Objects.equals(registerRequest.username(), null)
+                    &&!Objects.equals(registerRequest.password(), null) && !Objects.equals(registerRequest.email(), null)){
+                userDAO.createUser(new UserData(registerRequest.username(),registerRequest.password(),registerRequest.email()));
+                String authToken=UUID.randomUUID().toString();
+                authDAO.addAuthData(new AuthData(authToken, registerRequest.username()));
+                return new RegisterResult(registerRequest.username(),authToken);
+            }
+            else{
+                throw new ResponseException(400,"Error: bad request");
+            }
         }
         else{
-            throw new ResponseException(403,"Error: already taken and bad request");
+            throw new ResponseException(403,"Error: already taken");
         }
 
     }
