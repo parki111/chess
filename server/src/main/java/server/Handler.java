@@ -1,5 +1,5 @@
 package server;
-import Request_response.*;
+import requestResponse.*;
 import com.google.gson.Gson;
 import dataaccess.AuthDAO;
 import service.ClearService;
@@ -9,8 +9,6 @@ import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import exception.ResponseException;
 import spark.*;
-
-import java.util.List;
 
 public class Handler {
     UserServices userServices;

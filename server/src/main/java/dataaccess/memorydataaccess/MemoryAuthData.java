@@ -1,6 +1,6 @@
 package dataaccess.memorydataaccess;
 
-import Model.AuthData;
+import model.AuthData;
 import dataaccess.AuthDAO;
 import exception.ResponseException;
 import java.util.HashMap;

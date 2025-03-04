@@ -1,9 +1,8 @@
 package service;
 
-import Request_response.*;
+import requestResponse.*;
 import dataaccess.AuthDAO;
 import dataaccess.GameDAO;
-import dataaccess.UserDAO;
 import exception.ResponseException;
 
 public class GameServices {

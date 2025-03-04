@@ -1,4 +1,4 @@
-package Request_response;
+package requestResponse;
 
 public record ListGamesRequest (String authToken){
 }

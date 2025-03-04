@@ -1,6 +1,6 @@
 package dataaccess.memorydataaccess;
 
-import Model.GameData;
+import model.GameData;
 import chess.ChessGame;
 import dataaccess.GameDAO;
 import exception.ResponseException;
@@ -11,13 +11,17 @@ public class MemoryGamesData implements GameDAO {
     HashMap<Integer,GameData> games = new HashMap<>();
 
     public int createGame(String gameName) throws ResponseException{
-        GameData game = new GameData(games.size()+1,null,null,gameName,new ChessGame());
+        GameData game = new GameData(games.size()+1,"","",gameName,null);
         games.put(game.gameID(), game);
         return game.gameID();
     }
 
     public Collection<GameData> listGames() throws ResponseException{
         return games.values();
+        //        new Collection<>
+//        for (GameData game:games.values()){
+//
+//        }
     }
 
     public GameData findGame(int gameID) throws ResponseException{

@@ -1,11 +1,12 @@
 package service;
-import Model.AuthData;
-import Model.UserData;
-import Request_response.*;
+import model.AuthData;
+import model.UserData;
+import requestResponse.*;
 import dataaccess.AuthDAO;
 import dataaccess.UserDAO;
 import exception.ResponseException;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class UserServices {
@@ -16,7 +17,7 @@ public class UserServices {
         this.userDAO=userDAO;
     }
     public RegisterResult register(RegisterRequest registerRequest) throws ResponseException {
-        if (userDAO.getUserData(registerRequest.username())==null){
+        if (userDAO.getUserData(registerRequest.username())==null && !Objects.equals(registerRequest.username(), "")){
             userDAO.createUser(new UserData(registerRequest.username(),registerRequest.password(),registerRequest.email()));
             String authToken=UUID.randomUUID().toString();
             authDAO.addAuthData(new AuthData(authToken, registerRequest.username()));
@@ -40,7 +41,7 @@ public class UserServices {
             }
         }
         else{
-            throw new ResponseException(400,"Error: no userdata with given username");
+            throw new ResponseException(401,"Error: no userdata with given username");
         }
     }
     public void logout(LogoutRequest logoutRequest) throws ResponseException {
