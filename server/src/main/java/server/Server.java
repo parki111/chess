@@ -1,4 +1,5 @@
 package server;
+import exception.ResponseException;
 import spark.*;
 import java.util.Map;
 
@@ -9,8 +10,12 @@ public class Server {
 
         Spark.staticFiles.location("web");
 
+
         // Register your endpoints and handle exceptions here.
 
+//        Spark.delete("/db",this::handlerClear);
+//        Spark.post("/user",this::)
+//        Spark.exception(ResponseException.class, this::handleException)
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.init();
 
@@ -22,4 +27,5 @@ public class Server {
         Spark.stop();
         Spark.awaitStop();
     }
+//    private Object handleClearAll
 }
