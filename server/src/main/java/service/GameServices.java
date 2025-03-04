@@ -1,6 +1,6 @@
 package service;
 
-import requestResponse.*;
+import requestresponse.*;
 import dataaccess.AuthDAO;
 import dataaccess.GameDAO;
 import exception.ResponseException;

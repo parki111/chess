@@ -13,15 +13,15 @@ public class Rook implements PieceMovesCalculator{
     public HashSet<ChessMove> pieceMoves(ChessBoard board, ChessPosition position) {
         int row=position.getRow();
         int column=position.getColumn();
-        HashSet <ChessMove> rook_moves=new HashSet();
-        ChessPosition start_pos=new ChessPosition(row,column);
-        ChessPiece rook = board.getPiece(start_pos);
-        rook_moves.addAll(rook.chessmove_direction(1, 0, start_pos, board));
-        rook_moves.addAll(rook.chessmove_direction(0, 1, start_pos, board));
-        rook_moves.addAll(rook.chessmove_direction(-1, 0, start_pos, board));
-        rook_moves.addAll(rook.chessmove_direction(0, -1, start_pos, board));
-        System.out.println(rook_moves);
+        HashSet <ChessMove> rookMoves=new HashSet();
+        ChessPosition startPos=new ChessPosition(row,column);
+        ChessPiece rook = board.getPiece(startPos);
+        rookMoves.addAll(rook.chessmoveDirection(1, 0, startPos, board));
+        rookMoves.addAll(rook.chessmoveDirection(0, 1, startPos, board));
+        rookMoves.addAll(rook.chessmoveDirection(-1, 0, startPos, board));
+        rookMoves.addAll(rook.chessmoveDirection(0, -1, startPos, board));
+        System.out.println(rookMoves);
 
-        return rook_moves;
+        return rookMoves;
     }
 }

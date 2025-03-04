@@ -1,5 +1,5 @@
 package server;
-import requestResponse.*;
+import requestresponse.*;
 import com.google.gson.Gson;
 import dataaccess.AuthDAO;
 import service.ClearService;

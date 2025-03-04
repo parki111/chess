@@ -13,19 +13,19 @@ public class Knight implements PieceMovesCalculator{
     public HashSet<ChessMove> pieceMoves(ChessBoard board, ChessPosition position) {
         int row=position.getRow();
         int column=position.getColumn();
-        HashSet <ChessMove> Knight_moves=new HashSet();
-        ChessPosition start_pos=new ChessPosition(row,column);
-        ChessPiece Knight = board.getPiece(start_pos);
-        Knight_moves.addAll(Knight.chessmove_direction(2, -1, start_pos, board));
-        Knight_moves.addAll(Knight.chessmove_direction(1, -2, start_pos, board));
-        Knight_moves.addAll(Knight.chessmove_direction(-1, -2, start_pos, board));
-        Knight_moves.addAll(Knight.chessmove_direction(-2, -1, start_pos, board));
-        Knight_moves.addAll(Knight.chessmove_direction(-2, 1, start_pos, board));
-        Knight_moves.addAll(Knight.chessmove_direction(-1, 2, start_pos, board));
-        Knight_moves.addAll(Knight.chessmove_direction(1, 2, start_pos, board));
-        Knight_moves.addAll(Knight.chessmove_direction(2, 1, start_pos, board));
-        System.out.println(Knight_moves);
+        HashSet <ChessMove> knightMoves=new HashSet();
+        ChessPosition startPos=new ChessPosition(row,column);
+        ChessPiece Knight = board.getPiece(startPos);
+        knightMoves.addAll(Knight.chessmoveDirection(2, -1, startPos, board));
+        knightMoves.addAll(Knight.chessmoveDirection(1, -2, startPos, board));
+        knightMoves.addAll(Knight.chessmoveDirection(-1, -2, startPos, board));
+        knightMoves.addAll(Knight.chessmoveDirection(-2, -1, startPos, board));
+        knightMoves.addAll(Knight.chessmoveDirection(-2, 1, startPos, board));
+        knightMoves.addAll(Knight.chessmoveDirection(-1, 2, startPos, board));
+        knightMoves.addAll(Knight.chessmoveDirection(1, 2, startPos, board));
+        knightMoves.addAll(Knight.chessmoveDirection(2, 1, startPos, board));
+        System.out.println(knightMoves);
 
-        return Knight_moves;
+        return knightMoves;
     }
 }

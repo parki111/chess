@@ -13,22 +13,22 @@ public class Queen implements PieceMovesCalculator{
     public HashSet<ChessMove> pieceMoves(ChessBoard board, ChessPosition position) {
         int row=position.getRow();
         int column=position.getColumn();
-        HashSet <ChessMove> queen_moves=new HashSet();
-        ChessPosition start_pos=new ChessPosition(row,column);
-        ChessPiece queen = board.getPiece(start_pos);
-        queen_moves.addAll(queen.chessmove_direction(1, 1, start_pos, board));
-        queen_moves.addAll(queen.chessmove_direction(-1, 1, start_pos, board));
-        queen_moves.addAll(queen.chessmove_direction(1, -1, start_pos, board));
-        queen_moves.addAll(queen.chessmove_direction(-1, -1, start_pos, board));
-        queen_moves.addAll(queen.chessmove_direction(1, 0, start_pos, board));
-        queen_moves.addAll(queen.chessmove_direction(0, 1, start_pos, board));
-        queen_moves.addAll(queen.chessmove_direction(-1, 0, start_pos, board));
-        queen_moves.addAll(queen.chessmove_direction(0, -1, start_pos, board));
-        for (ChessMove move : queen_moves) {
+        HashSet <ChessMove> queenMoves=new HashSet();
+        ChessPosition startPos=new ChessPosition(row,column);
+        ChessPiece queen = board.getPiece(startPos);
+        queenMoves.addAll(queen.chessmoveDirection(1, 1, startPos, board));
+        queenMoves.addAll(queen.chessmoveDirection(-1, 1, startPos, board));
+        queenMoves.addAll(queen.chessmoveDirection(1, -1, startPos, board));
+        queenMoves.addAll(queen.chessmoveDirection(-1, -1, startPos, board));
+        queenMoves.addAll(queen.chessmoveDirection(1, 0, startPos, board));
+        queenMoves.addAll(queen.chessmoveDirection(0, 1, startPos, board));
+        queenMoves.addAll(queen.chessmoveDirection(-1, 0, startPos, board));
+        queenMoves.addAll(queen.chessmoveDirection(0, -1, startPos, board));
+        for (ChessMove move : queenMoves) {
             System.out.println("("+move.getEndPosition().getRow()+","+move.getEndPosition().getColumn()+")");
         }
 
 
-        return queen_moves;
+        return queenMoves;
     }
 }

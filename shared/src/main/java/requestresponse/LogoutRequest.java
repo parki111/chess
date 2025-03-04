@@ -1,4 +1,4 @@
-package requestResponse;
+package requestresponse;
 
 public record LogoutRequest (String authToken){
 }

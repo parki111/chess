@@ -63,34 +63,34 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        PieceType new_piece=board.getPiece(myPosition).pieceType;
+        PieceType newPiece=board.getPiece(myPosition).pieceType;
         HashSet<ChessMove> hasher=new HashSet<>();
-        if (new_piece == PieceType.ROOK)
+        if (newPiece == PieceType.ROOK)
         {
             Rook rook = new Rook(board,myPosition);
             hasher=rook.pieceMoves(board,myPosition);
         }
-        if (new_piece == PieceType.BISHOP)
+        if (newPiece == PieceType.BISHOP)
         {
             Bishop bishop = new Bishop(board,myPosition);
             hasher=bishop.pieceMoves(board,myPosition);
         }
-        else if (new_piece == PieceType.QUEEN)
+        else if (newPiece == PieceType.QUEEN)
         {
             Queen queen = new Queen(board,myPosition);
             hasher=queen.pieceMoves(board,myPosition);
         }
-        else if (new_piece == PieceType.KING)
+        else if (newPiece == PieceType.KING)
         {
             King king = new King(board,myPosition);
             hasher=king.pieceMoves(board,myPosition);
         }
-        else if (new_piece == PieceType.KNIGHT)
+        else if (newPiece == PieceType.KNIGHT)
         {
             Knight knight = new Knight(board,myPosition);
             hasher=knight.pieceMoves(board,myPosition);
         }
-        else if (new_piece == PieceType.PAWN)
+        else if (newPiece == PieceType.PAWN)
         {
             Pawn pawn = new Pawn(board,myPosition);
             hasher=pawn.pieceMoves(board,myPosition);
@@ -98,28 +98,30 @@ public class ChessPiece {
         return hasher;
     }
 
-    public HashSet<ChessMove> chessmove_direction(int y_dir, int x_dir, ChessPosition start_pos, ChessBoard board) {         //Queen,bishop,rook
-        int row = start_pos.getRow();
-        int column = start_pos.getColumn();
-        HashSet<ChessMove> piecemoves_1direction = new HashSet();
-        ChessPiece piece = board.getPiece(start_pos);
-        ChessGame.TeamColor piece_color = piece.getTeamColor();
+    public HashSet<ChessMove> chessmoveDirection(int yDir, int xDir, ChessPosition startPos, ChessBoard board) {         //Queen,bishop,rook
+        int row = startPos.getRow();
+        int column = startPos.getColumn();
+        HashSet<ChessMove> piecemovesOneDirection = new HashSet();
+        ChessPiece piece = board.getPiece(startPos);
+        ChessGame.TeamColor pieceColor = piece.getTeamColor();
         int multiplier = 1;
-        int i = multiplier * y_dir + row;
-        int j = multiplier * x_dir + column;
-        int pawn_2spaces=0;
-        if ((row==7 && piece.getTeamColor() == ChessGame.TeamColor.BLACK) || (row==2 && piece.getTeamColor() == ChessGame.TeamColor.WHITE)){pawn_2spaces=1;}
-        boolean promotion = ((i==1 && piece.getTeamColor() == ChessGame.TeamColor.BLACK) || (i==8 && piece.getTeamColor() == ChessGame.TeamColor.WHITE));
+        int i = multiplier * yDir + row;
+        int j = multiplier * xDir + column;
+        int pawnTwoSpaces=0;
+        if ((row==7 && piece.getTeamColor() == ChessGame.TeamColor.BLACK) ||
+                (row==2 && piece.getTeamColor() == ChessGame.TeamColor.WHITE)){pawnTwoSpaces=1;}
+        boolean promotion = ((i==1 && piece.getTeamColor() == ChessGame.TeamColor.BLACK) ||
+                (i==8 && piece.getTeamColor() == ChessGame.TeamColor.WHITE));
         while (1 <= i && i <= 8 && 1 <= j && j <= 8) {
 
 
-            ChessPiece other_piece = board.getPiece(new ChessPosition(i, j));
+            ChessPiece otherPiece = board.getPiece(new ChessPosition(i, j));
 
-            if (other_piece != null) {
-                if (other_piece.getTeamColor() == piece_color) {
+            if (otherPiece != null) {
+                if (otherPiece.getTeamColor() == pieceColor) {
                     break;
                 }
-                if (piece.pieceType == PieceType.PAWN && x_dir==0){
+                if (piece.pieceType == PieceType.PAWN && xDir==0){
                     break;
                 }
                 else if (piece.pieceType ==PieceType.PAWN && promotion)
@@ -128,47 +130,47 @@ public class ChessPiece {
                 }
                 else{
 
-                    ChessMove move = new ChessMove(start_pos, new ChessPosition(i, j), null);
-                    piecemoves_1direction.add(move);
+                    ChessMove move = new ChessMove(startPos, new ChessPosition(i, j), null);
+                    piecemovesOneDirection.add(move);
                     break;
                 }
             }
-            else if (piece.pieceType == PieceType.PAWN && x_dir!=0){
+            else if (piece.pieceType == PieceType.PAWN && xDir!=0){
                 break;
             }
             else
             {
                 if (piece.pieceType!=PieceType.PAWN) {
-                    ChessMove move = new ChessMove(start_pos, new ChessPosition(i, j), null);
-                    piecemoves_1direction.add(move);
+                    ChessMove move = new ChessMove(startPos, new ChessPosition(i, j), null);
+                    piecemovesOneDirection.add(move);
                     multiplier = multiplier + 1;
-                    i = multiplier * y_dir + row;
-                    j = multiplier * x_dir + column;
+                    i = multiplier * yDir + row;
+                    j = multiplier * xDir + column;
                 }
             }
             if (piece.pieceType==PieceType.KING || piece.pieceType==PieceType.KNIGHT){
                 break;
             }
             else if(piece.pieceType==PieceType.PAWN){
-                ChessMove move = new ChessMove(start_pos, new ChessPosition(i, j), null);
-                ChessMove move1 = new ChessMove(start_pos, new ChessPosition(i, j), PieceType.KNIGHT);
-                ChessMove move2 = new ChessMove(start_pos, new ChessPosition(i, j), PieceType.ROOK);
-                ChessMove move3 = new ChessMove(start_pos, new ChessPosition(i, j), PieceType.BISHOP);
-                ChessMove move4 = new ChessMove(start_pos, new ChessPosition(i, j), PieceType.QUEEN);
+                ChessMove move = new ChessMove(startPos, new ChessPosition(i, j), null);
+                ChessMove move1 = new ChessMove(startPos, new ChessPosition(i, j), PieceType.KNIGHT);
+                ChessMove move2 = new ChessMove(startPos, new ChessPosition(i, j), PieceType.ROOK);
+                ChessMove move3 = new ChessMove(startPos, new ChessPosition(i, j), PieceType.BISHOP);
+                ChessMove move4 = new ChessMove(startPos, new ChessPosition(i, j), PieceType.QUEEN);
                 if (promotion==true) {
-                    piecemoves_1direction.add(move1);
-                    piecemoves_1direction.add(move2);
-                    piecemoves_1direction.add(move3);
-                    piecemoves_1direction.add(move4);
+                    piecemovesOneDirection.add(move1);
+                    piecemovesOneDirection.add(move2);
+                    piecemovesOneDirection.add(move3);
+                    piecemovesOneDirection.add(move4);
                 }
                 else{
-                        piecemoves_1direction.add(move);
+                        piecemovesOneDirection.add(move);
                     }
-                if (pawn_2spaces==1){
+                if (pawnTwoSpaces==1){
                     multiplier+=1;
-                    i = multiplier * y_dir + row;
-                    j = multiplier * x_dir + column;
-                    pawn_2spaces++;
+                    i = multiplier * yDir + row;
+                    j = multiplier * xDir + column;
+                    pawnTwoSpaces++;
                     continue;
                 }
                 break;
@@ -177,12 +179,12 @@ public class ChessPiece {
 
 
         }
-        return piecemoves_1direction;
+        return piecemovesOneDirection;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o) {return true;}
         if (o == null || getClass() != o.getClass()) {
             return false;
         }

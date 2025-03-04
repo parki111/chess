@@ -10,9 +10,9 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessBoard {
-    private Object[][] chess_board;
+    private Object[][] chessBoard;
     public ChessBoard() {
-        chess_board=new Object[8][8];
+        chessBoard=new Object[8][8];
     }
     /**
      * Adds a chess piece to the chessboard
@@ -21,31 +21,31 @@ public class ChessBoard {
      * //@param //piece    the piece to add
      **/
     public void initializeChessBoard() {
-        chess_board[0][0] = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.ROOK);
-        chess_board[0][1] = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.KNIGHT);
-        chess_board[0][2] = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.BISHOP);
-        chess_board[0][3] = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.QUEEN);
-        chess_board[0][4] = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.KING);
-        chess_board[0][5] = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.BISHOP);
-        chess_board[0][6] = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.KNIGHT);
-        chess_board[0][7] = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.ROOK);
+        chessBoard[0][0] = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.ROOK);
+        chessBoard[0][1] = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.KNIGHT);
+        chessBoard[0][2] = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.BISHOP);
+        chessBoard[0][3] = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.QUEEN);
+        chessBoard[0][4] = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.KING);
+        chessBoard[0][5] = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.BISHOP);
+        chessBoard[0][6] = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.KNIGHT);
+        chessBoard[0][7] = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.ROOK);
         for (int i = 0; i < 8; i++) {
-            chess_board[1][i]= new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.PAWN);
+            chessBoard[1][i]= new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.PAWN);
         }
-        chess_board[7][0] = new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.ROOK);
-        chess_board[7][1] = new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.KNIGHT);
-        chess_board[7][2] = new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.BISHOP);
-        chess_board[7][3] = new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.QUEEN);
-        chess_board[7][4] = new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.KING);
-        chess_board[7][5] = new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.BISHOP);
-        chess_board[7][6] = new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.KNIGHT);
-        chess_board[7][7] = new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.ROOK);
+        chessBoard[7][0] = new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.ROOK);
+        chessBoard[7][1] = new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.KNIGHT);
+        chessBoard[7][2] = new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.BISHOP);
+        chessBoard[7][3] = new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.QUEEN);
+        chessBoard[7][4] = new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.KING);
+        chessBoard[7][5] = new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.BISHOP);
+        chessBoard[7][6] = new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.KNIGHT);
+        chessBoard[7][7] = new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.ROOK);
         for (int i = 0; i < 8; i++) {
-            chess_board[6][i]= new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.PAWN);
+            chessBoard[6][i]= new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.PAWN);
         }
     }
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        chess_board[position.getRow()-1][position.getColumn()-1] = piece;
+        chessBoard[position.getRow()-1][position.getColumn()-1] = piece;
         if (piece!=null){
             System.out.println(this);
             System.out.println("Added piece!");
@@ -60,12 +60,12 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        if (chess_board[position.getRow()-1][position.getColumn()-1]==null){
+        if (chessBoard[position.getRow()-1][position.getColumn()-1]==null){
             return null;
         }
         else{
             //System.out.println(this);
-            return (ChessPiece) chess_board[position.getRow()-1][position.getColumn()-1];
+            return (ChessPiece) chessBoard[position.getRow()-1][position.getColumn()-1];
         }
     }
 
@@ -74,38 +74,34 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        chess_board=new Object[8][8];
+        chessBoard=new Object[8][8];
         initializeChessBoard();
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
-//            System.out.println("expected"+given.chess_board[i][j]);
-//                    System.out.println(chess_board[i][j]);
+//            System.out.println("expected"+given.chessBoard[i][j]);
+//                    System.out.println(chessBoard[i][j]);
             System.out.println(this);
             System.out.println(o);
             System.out.println("not true");
             return false;
         }
-//        ChessBoard that = (ChessBoard) o;
-//        System.out.println(that);
-//        System.out.println(this);
-//        return Objects.deepEquals(that, this);
         ChessBoard given=(ChessBoard) o;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if (given.chess_board[i][j]==null && chess_board[i][j]!=null){
+                if (given.chessBoard[i][j]==null && chessBoard[i][j]!=null){
                     return false;
                 }
-                else if(given.chess_board[i][j]!=null && chess_board[i][j]==null){
+                else if(given.chessBoard[i][j]!=null && chessBoard[i][j]==null){
                     return false;
                 }
-                else if (given.chess_board[i][j]==null && chess_board[i][j]==null) {
+                else if (given.chessBoard[i][j]==null && chessBoard[i][j]==null) {
                 }
-                else if (!given.chess_board[i][j].toString().equals(chess_board[i][j].toString())){
-                    System.out.println("expected"+given.chess_board[i][j]);
-                    System.out.println(chess_board[i][j]);
+                else if (!given.chessBoard[i][j].toString().equals(chessBoard[i][j].toString())){
+                    System.out.println("expected"+given.chessBoard[i][j]);
+                    System.out.println(chessBoard[i][j]);
                     System.out.println("false");
                     return false;
                 }
@@ -119,7 +115,7 @@ public class ChessBoard {
 
     @Override
     public int hashCode() {
-        return Arrays.deepHashCode(chess_board);
+        return Arrays.deepHashCode(chessBoard);
     }
 
     @Override
@@ -128,11 +124,11 @@ public class ChessBoard {
         for (int i=0;i<8;i++){
             String line="";
             for (int j=0;j<8;j++){
-                if (chess_board[i][j]==null){
+                if (chessBoard[i][j]==null){
                     line=line+"|  |";
                 }
                 else{
-                    line=line+"|"+chess_board[i][j].toString()+"|";
+                    line=line+"|"+chessBoard[i][j].toString()+"|";
                 }
 
             }

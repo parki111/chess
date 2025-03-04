@@ -13,22 +13,22 @@ public class King implements PieceMovesCalculator{
     public HashSet<ChessMove> pieceMoves(ChessBoard board, ChessPosition position) {
         int row=position.getRow();
         int column=position.getColumn();
-        HashSet <ChessMove> king_moves=new HashSet();
-        ChessPosition start_pos=new ChessPosition(row,column);
-        ChessPiece king = board.getPiece(start_pos);
-        king_moves.addAll(king.chessmove_direction(1, 1, start_pos, board));
-        king_moves.addAll(king.chessmove_direction(-1, 1, start_pos, board));
-        king_moves.addAll(king.chessmove_direction(1, -1, start_pos, board));
-        king_moves.addAll(king.chessmove_direction(-1, -1, start_pos, board));
-        king_moves.addAll(king.chessmove_direction(1, 0, start_pos, board));
-        king_moves.addAll(king.chessmove_direction(0, 1, start_pos, board));
-        king_moves.addAll(king.chessmove_direction(-1, 0, start_pos, board));
-        king_moves.addAll(king.chessmove_direction(0, -1, start_pos, board));
-        for (ChessMove move : king_moves) {
+        HashSet <ChessMove> kingMoves=new HashSet();
+        ChessPosition startPos=new ChessPosition(row,column);
+        ChessPiece king = board.getPiece(startPos);
+        kingMoves.addAll(king.chessmoveDirection(1, 1, startPos, board));
+        kingMoves.addAll(king.chessmoveDirection(-1, 1, startPos, board));
+        kingMoves.addAll(king.chessmoveDirection(1, -1, startPos, board));
+        kingMoves.addAll(king.chessmoveDirection(-1, -1, startPos, board));
+        kingMoves.addAll(king.chessmoveDirection(1, 0, startPos, board));
+        kingMoves.addAll(king.chessmoveDirection(0, 1, startPos, board));
+        kingMoves.addAll(king.chessmoveDirection(-1, 0, startPos, board));
+        kingMoves.addAll(king.chessmoveDirection(0, -1, startPos, board));
+        for (ChessMove move : kingMoves) {
             System.out.println("("+move.getEndPosition().getRow()+","+move.getEndPosition().getColumn()+")");
         }
 
 
-        return king_moves;
+        return kingMoves;
     }
 }
