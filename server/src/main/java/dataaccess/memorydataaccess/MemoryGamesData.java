@@ -12,7 +12,7 @@ public class MemoryGamesData implements GameDAO {
     HashMap<Integer,GameData> games = new HashMap<>();
 
     public int createGame(String gameName) throws ResponseException{
-        GameData game = new GameData(games.size()+1,"","",gameName,new ChessGame());
+        GameData game = new GameData(games.size()+1,null,null,gameName,new ChessGame());
         games.put(game.gameID(), game);
         return game.gameID();
     }
@@ -35,13 +35,13 @@ public class MemoryGamesData implements GameDAO {
     public Boolean updateGame(String username, String playerColor, GameData gameData) throws ResponseException{
         GameData  newGame;
         if (Objects.equals(playerColor, "BLACK")){
-            if (!Objects.equals(gameData.blackUsername(), "")){
+            if (!Objects.equals(gameData.blackUsername(), null)){
                 throw new ResponseException(403,"Error: already taken");
             }
             newGame = new GameData(gameData.gameID(), gameData.whiteUsername(), username, gameData.gameName(), gameData.game());
         }
         else if (Objects.equals(playerColor, "WHITE")){
-            if (!Objects.equals(gameData.whiteUsername(), "")){
+            if (!Objects.equals(gameData.whiteUsername(), null)){
                 throw new ResponseException(403,"Error: already taken");
             }
             newGame = new GameData(gameData.gameID(), username, gameData.blackUsername(), gameData.gameName(), gameData.game());
