@@ -1,12 +1,9 @@
 package service;
 import Model.AuthData;
 import Model.UserData;
-import Request_response.LoginRequest;
-import Request_response.LoginResult;
+import Request_response.*;
 import dataaccess.AuthDAO;
 import dataaccess.UserDAO;
-import Request_response.RegisterRequest;
-import Request_response.RegisterResult;
 import exception.ResponseException;
 
 import java.util.UUID;
@@ -46,7 +43,12 @@ public class UserServices {
             throw new ResponseException(400,"Error: no userdata with given username");
         }
     }
-//    public void logout(LogoutRequest logoutRequest) {
-//
-//    }
+    public void logout(LogoutRequest logoutRequest) throws ResponseException {
+        if (authDAO.getAuthData(logoutRequest.authToken())!=null){
+            authDAO.deleteAuthData(logoutRequest.authToken());
+        }
+        else{
+            throw new ResponseException(401,"Error: unauthorized");
+        }
+    }
 }

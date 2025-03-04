@@ -17,10 +17,10 @@ public class MemoryAuthData implements AuthDAO {
         return auths.getOrDefault(authToken, null);
     }
     public Boolean deleteAuthData(String authToken) throws ResponseException{
-        if (!auths.containsKey(authToken))
-        {
-            return Boolean.FALSE;
-        }
+//        if (!auths.containsKey(authToken))
+//        {
+//            return Boolean.FALSE;
+//        }
         auths.remove(authToken);
         return Boolean.TRUE;
     }
