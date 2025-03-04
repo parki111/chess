@@ -29,10 +29,10 @@ public class UserServices {
         }
 
     }
-//    public LoginResult login(LoginRequest loginRequest) {
-//
-//    }
-//    public void logout(LogoutRequest logoutRequest) {
-//
-//    }
+    public LoginResult login(LoginRequest loginRequest) {
+
+    }
+    public void logout(LogoutRequest logoutRequest) {
+
+    }
 }
