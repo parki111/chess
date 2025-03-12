@@ -5,22 +5,32 @@ import dataaccess.UserDAO;
 import dataaccess.memorydataaccess.MemoryAuthData;
 import dataaccess.memorydataaccess.MemoryGamesData;
 import dataaccess.memorydataaccess.MemoryUserData;
+import dataaccess.sqldataaccess.SqlAuthData;
+import dataaccess.sqldataaccess.SqlGamesData;
+import dataaccess.sqldataaccess.SqlUserData;
 import exception.ResponseException;
 import spark.*;
-
-import java.util.Map;
 
 public class Server {
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
-        AuthDAO authDAO = new MemoryAuthData();
-        UserDAO userDAO = new MemoryUserData();
-        GameDAO gameDAO = new MemoryGamesData();
+        AuthDAO authDAO;
+        UserDAO userDAO;
+        GameDAO gameDAO;
+        try {
+            authDAO = new SqlAuthData();
+            userDAO = new SqlUserData();
+            gameDAO = new SqlGamesData();
+
+        }
+        catch (Throwable Exception) {
+            authDAO = new MemoryAuthData();
+            userDAO = new MemoryUserData();
+            gameDAO = new MemoryGamesData();
+        }
         Handler handler = new Handler(authDAO,userDAO,gameDAO);
-
         Spark.staticFiles.location("web");
-
 
         // Register your endpoints and handle exceptions here.
 

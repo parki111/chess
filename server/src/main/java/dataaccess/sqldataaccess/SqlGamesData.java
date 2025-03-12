@@ -1,14 +1,14 @@
 package dataaccess.sqldataaccess;
 
 import chess.ChessGame;
+import dataaccess.GameDAO;
 import exception.ResponseException;
 import model.GameData;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 
-public class SqlDataAccessGamesData {
+public class SqlGamesData implements GameDAO {
     public int createGame(String gameName) throws ResponseException{return 1;};
     public Collection<GameData> listGames() throws ResponseException{return new HashSet<GameData>();};
     public GameData findGame(int gameID) throws ResponseException {return new GameData(5,"","","",new ChessGame());};
