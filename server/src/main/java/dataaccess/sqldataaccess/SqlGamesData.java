@@ -30,7 +30,7 @@ public class SqlGamesData implements GameDAO {
     public int createGame(String gameName) throws ResponseException{
         var statement = "INSERT INTO gameData (whiteUsername,blackUsername,gameName,chessgame) VALUES (?, ?, ?, ?)";
 
-        return executeUpdate(statement,"null","null",gameName,(new Gson()).toJson(new ChessGame()));
+        return executeUpdate(statement,null,null,gameName,(new Gson()).toJson(new ChessGame()));
     };
 
 
@@ -70,13 +70,16 @@ public class SqlGamesData implements GameDAO {
 
     public Boolean updateGame(String username, String playerColor, GameData gameData) throws ResponseException{
         GameData newGame;
+        System.out.println("Updated Game");
         if (Objects.equals(playerColor, "BLACK")){
             if (!Objects.equals(gameData.blackUsername(), null)){
                 throw new ResponseException(403,"Error: already taken");
             }
+            System.out.println("Updated Game");
             newGame = new GameData(gameData.gameID(), gameData.whiteUsername(), username, gameData.gameName(), gameData.game());
             String sql = "UPDATE gameData SET whiteUsername = ?, blackUsername=?, gameName=?, chessgame=? WHERE id = ?";
-            executeUpdate(sql,newGame.whiteUsername(),newGame.blackUsername(),newGame.gameName(),newGame.game(),gameData.gameID());
+            executeUpdate(sql,newGame.whiteUsername(),newGame.blackUsername(),newGame.gameName(),
+                    (new Gson()).toJson(newGame.game()),gameData.gameID());
             return true;
         }
         else if (Objects.equals(playerColor, "WHITE")){
@@ -85,7 +88,7 @@ public class SqlGamesData implements GameDAO {
             }
             newGame = new GameData(gameData.gameID(), username, gameData.blackUsername(), gameData.gameName(), gameData.game());
             String sql = "UPDATE gameData SET whiteUsername = ?, blackUsername=?, gameName=?, chessgame=? WHERE id = ?";
-            executeUpdate(sql,newGame.whiteUsername(),newGame.blackUsername(),newGame.gameName(),newGame.game(),gameData.gameID());
+            executeUpdate(sql,newGame.whiteUsername(),newGame.blackUsername(),newGame.gameName(),(new Gson()).toJson(newGame.game()),gameData.gameID());
             return Boolean.TRUE;
         }
         else{
@@ -114,8 +117,8 @@ public class SqlGamesData implements GameDAO {
             """
             CREATE TABLE IF NOT EXISTS  gameData (
               `id` int NOT NULL AUTO_INCREMENT,
-              `whiteUsername` varchar(256) NOT NULL,
-              `blackUsername` varchar(256) NOT NULL,
+              `whiteUsername` varchar(256) NULL,
+              `blackUsername` varchar(256) NULL,
               `gameName` varchar(256) NOT NULL,
               `chessgame` JSON NOT NULL,
               PRIMARY KEY (`id`)
@@ -143,10 +146,11 @@ public class SqlGamesData implements GameDAO {
             try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
                 for (var i = 0; i < params.length; i++) {
                     var param = params[i];
-                    if (param instanceof String p) ps.setString(i + 1, p);
+                    if (param == null) ps.setString(i + 1, null);
+                    else if (param instanceof String p) ps.setString(i + 1, p);
                     else if (param instanceof Integer p) ps.setInt(i + 1, p);
-                    else if (param instanceof ChessGame p) ps.setString(i + 1, p.toString());
-                    else if (param == null) ps.setNull(i + 1, NULL);
+                    else if (param instanceof ChessGame p) ps.setString(i + 1, new Gson().toJson(p));
+
                 }
                 ps.executeUpdate();
 
