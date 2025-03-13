@@ -2,14 +2,17 @@ package server;
 
 import dataaccess.sqldataaccess.SqlAuthData;
 import dataaccess.sqldataaccess.SqlUserData;
+import dataaccess.sqldataaccess.SqlGamesData;
 import exception.ResponseException;
 import model.AuthData;
 import model.UserData;
+import model.GameData;
 
 public class TempTests {
     public static void main(String args[]) throws ResponseException {
         SqlAuthData dataThing = new SqlAuthData();
         SqlUserData userData = new SqlUserData();
+        SqlGamesData gamesData = new SqlGamesData();
         dataThing.clearAuthData();
         dataThing.addAuthData(new AuthData("THIS IS A TOKEN OF THINGS TO COME2", "YOUR_MOM"));
         dataThing.addAuthData(new AuthData("THIS COMPUTER IS MESSED UP", "YOUR_MOM"));
@@ -24,6 +27,7 @@ public class TempTests {
         UserData new_userData=userData.getUserData("parki11");
         System.out.println(new_userData.email());
         userData.clearUserData();
+        gamesData.createGame("game1");
 
 
         //dataThing.clearAuthData();
