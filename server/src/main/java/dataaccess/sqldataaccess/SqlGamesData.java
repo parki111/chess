@@ -86,7 +86,7 @@ public class SqlGamesData implements GameDAO {
             newGame = new GameData(gameData.gameID(), username, gameData.blackUsername(), gameData.gameName(), gameData.game());
             String sql = "UPDATE gameData SET whiteUsername = ?, blackUsername=?, gameName=?, chessgame=? WHERE id = ?";
             executeUpdate(sql,newGame.whiteUsername(),newGame.blackUsername(),newGame.gameName(),newGame.game(),gameData.gameID());
-            return true;
+            return Boolean.TRUE;
         }
         else{
             throw new ResponseException(400,"Error: bad request");
