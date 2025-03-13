@@ -19,13 +19,13 @@ public class TempTests {
         dataThing.clearAuthData();
         AuthData authData = new AuthData("THIS COMPUTER IS MESSED UP", "YOUR_MOM");
         dataThing.addAuthData(authData);
-        AuthData new_authData = dataThing.getAuthData("THIS COMPUTER IS MESSED UP");
-        System.out.println(new_authData.username());
-        dataThing.deleteAuthData(new_authData.authToken());
+        AuthData newAuthData = dataThing.getAuthData("THIS COMPUTER IS MESSED UP");
+        System.out.println(newAuthData.username());
+        dataThing.deleteAuthData(newAuthData.authToken());
         userData.clearUserData();
         userData.createUser(new UserData("parki11","fjdk","sedf@gmail.com"));
-        UserData new_userData=userData.getUserData("parki11");
-        System.out.println(new_userData.email());
+        UserData newUserData=userData.getUserData("parki11");
+        System.out.println(newUserData.email());
         userData.clearUserData();
         gamesData.createGame("game1");
         GameData game=gamesData.findGame(1);
