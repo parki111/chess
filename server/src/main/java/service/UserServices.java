@@ -1,6 +1,7 @@
 package service;
 import model.AuthData;
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 import requestresponse.*;
 import dataaccess.AuthDAO;
 import dataaccess.UserDAO;
@@ -37,7 +38,7 @@ public class UserServices {
     public LoginResult login(LoginRequest loginRequest) throws ResponseException {
         UserData userData = userDAO.getUserData(loginRequest.username());
         if (userData!=null){
-            if (loginRequest.password().equals(userData.password())){
+            if (loginRequest.password().equals(userData.password()) || BCrypt.checkpw(loginRequest.password(),userData.password())){
                 String authToken=UUID.randomUUID().toString();
                 authDAO.addAuthData(new AuthData(authToken, loginRequest.username()));
                 return new LoginResult(loginRequest.username(), authToken);
