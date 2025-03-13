@@ -69,9 +69,9 @@ public class SqlAuthData implements AuthDAO {
 
     private void configureDatabase() throws ResponseException {
         DatabaseManager.createDatabase();
-        try (var conn = DatabaseManager.getConnection()) {
+        try (var connect = DatabaseManager.getConnection()) {
             for (var statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
+                try (var preparedStatement = connect.prepareStatement(statement)) {
                     preparedStatement.executeUpdate();
                 }
             }
@@ -83,12 +83,12 @@ public class SqlAuthData implements AuthDAO {
 
 
     private void executeUpdate(String statement, Object... params) throws ResponseException {
-        try (var conn = DatabaseManager.getConnection()) {
-            try (var ps = conn.prepareStatement(statement)) {
+        try (var connect = DatabaseManager.getConnection()) {
+            try (var ps = connect.prepareStatement(statement)) {
                 for (var i = 0; i < params.length; i++) {
                     var param = params[i];
-                    if (param instanceof String p) ps.setString(i + 1, p);
-                    else if (param == null) ps.setNull(i + 1, NULL);
+                    if (param instanceof String p) {ps.setString(i + 1, p);}
+                    else if (param == null) {ps.setNull(i + 1, NULL);}
                 }
                 ps.executeUpdate();
             }

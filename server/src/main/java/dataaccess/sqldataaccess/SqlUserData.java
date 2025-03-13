@@ -17,8 +17,8 @@ public class SqlUserData implements UserDAO {
 
     public Boolean createUser(UserData user) throws ResponseException{
         var statement = "INSERT INTO userData (username, password, email) VALUES (?, ?, ?)";
-        String encrypted_password = BCrypt.hashpw(user.password(), BCrypt.gensalt());
-        executeUpdate(statement, user.username(), encrypted_password, user.email());
+        String encryptedPassword = BCrypt.hashpw(user.password(), BCrypt.gensalt());
+        executeUpdate(statement, user.username(), encryptedPassword, user.email());
         return true;
     };
     public UserData getUserData(String username) throws ResponseException{
@@ -66,9 +66,9 @@ public class SqlUserData implements UserDAO {
 
     private void configureDatabase() throws ResponseException {
         DatabaseManager.createDatabase();
-        try (var conn = DatabaseManager.getConnection()) {
+        try (var connection = DatabaseManager.getConnection()) {
             for (var statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
+                try (var preparedStatement = connection.prepareStatement(statement)) {
                     preparedStatement.executeUpdate();
                 }
             }
@@ -84,8 +84,8 @@ public class SqlUserData implements UserDAO {
             try (var ps = conn.prepareStatement(statement)) {
                 for (var i = 0; i < params.length; i++) {
                     var param = params[i];
-                    if (param instanceof String p) ps.setString(i + 1, p);
-                    else if (param == null) ps.setNull(i + 1, NULL);
+                    if (param instanceof String p) {ps.setString(i + 1, p);}
+                    else if (param == null) {ps.setNull(i + 1, NULL);}
                 }
                 ps.executeUpdate();
             }

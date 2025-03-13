@@ -88,7 +88,8 @@ public class SqlGamesData implements GameDAO {
             }
             newGame = new GameData(gameData.gameID(), username, gameData.blackUsername(), gameData.gameName(), gameData.game());
             String sql = "UPDATE gameData SET whiteUsername = ?, blackUsername=?, gameName=?, chessgame=? WHERE id = ?";
-            executeUpdate(sql,newGame.whiteUsername(),newGame.blackUsername(),newGame.gameName(),(new Gson()).toJson(newGame.game()),gameData.gameID());
+            executeUpdate(sql,newGame.whiteUsername(),newGame.blackUsername(),
+                    newGame.gameName(),(new Gson()).toJson(newGame.game()),gameData.gameID());
             return Boolean.TRUE;
         }
         else{
@@ -146,10 +147,10 @@ public class SqlGamesData implements GameDAO {
             try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
                 for (var i = 0; i < params.length; i++) {
                     var param = params[i];
-                    if (param == null) ps.setString(i + 1, null);
-                    else if (param instanceof String p) ps.setString(i + 1, p);
-                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
-                    else if (param instanceof ChessGame p) ps.setString(i + 1, new Gson().toJson(p));
+                    if (param == null) {ps.setString(i + 1, null);}
+                    else if (param instanceof String p) {ps.setString(i + 1, p);}
+                    else if (param instanceof Integer p) {ps.setInt(i + 1, p);}
+                    else if (param instanceof ChessGame p) {ps.setString(i + 1, new Gson().toJson(p));}
 
                 }
                 ps.executeUpdate();
