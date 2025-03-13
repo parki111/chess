@@ -15,10 +15,19 @@ import java.util.HashSet;
 
 import static java.sql.Types.NULL;
 
+
+
 public class SqlGamesData implements GameDAO {
+    public SqlGamesData() throws ResponseException {
+        configureDatabase();
+    };
+
     public int createGame(String gameName) throws ResponseException{return 1;};
+
     public Collection<GameData> listGames() throws ResponseException{return new HashSet<GameData>();};
+
     public GameData findGame(int gameID) throws ResponseException {return new GameData(5,"","","",new ChessGame());};
+
     public Boolean updateGame(String username, String playerColor, GameData gameData) throws ResponseException{return true;};
     //    Boolean deleteGame(String username, String playerColor, GameData gameData) throws ResponseException;
     public void clearGames() throws ResponseException{
