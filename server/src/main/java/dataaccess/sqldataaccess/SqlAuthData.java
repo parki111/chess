@@ -4,6 +4,8 @@ import dataaccess.AuthDAO;
 import dataaccess.DatabaseManager;
 import exception.ResponseException;
 import model.AuthData;
+
+import static dataaccess.sqldataaccess.SqlGamesData.configureDatabase;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,7 +16,7 @@ public class SqlAuthData implements AuthDAO {
 
     public SqlAuthData() throws ResponseException {
         System.out.println("HELLO WORLD");
-        configureDatabase();
+        configureDatabase(createStatements);
     }
 
     public AuthData addAuthData(AuthData authData) throws ResponseException{
@@ -67,18 +69,6 @@ public class SqlAuthData implements AuthDAO {
             """
     };
 
-    private void configureDatabase() throws ResponseException {
-        DatabaseManager.createDatabase();
-        try (var connect = DatabaseManager.getConnection()) {
-            for (var statement : createStatements) {
-                try (var preparedStatement = connect.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException ex) {
-            throw new ResponseException(500, String.format("Unable to configure database: %s", ex.getMessage()));
-        }
-    }
 
 
 

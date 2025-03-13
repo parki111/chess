@@ -7,12 +7,14 @@ import model.UserData;
 import org.mindrot.jbcrypt.BCrypt;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import static dataaccess.sqldataaccess.SqlGamesData.configureDatabase;
 import static java.sql.Types.NULL;
 
 public class SqlUserData implements UserDAO {
 
     public SqlUserData() throws ResponseException {
-        configureDatabase();
+        configureDatabase(createStatements);
     };
 
     public Boolean createUser(UserData user) throws ResponseException{
@@ -64,18 +66,6 @@ public class SqlUserData implements UserDAO {
             """
     };
 
-    private void configureDatabase() throws ResponseException {
-        DatabaseManager.createDatabase();
-        try (var connection = DatabaseManager.getConnection()) {
-            for (var statement : createStatements) {
-                try (var preparedStatement = connection.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException ex) {
-            throw new ResponseException(500, String.format("Unable to configure database: %s", ex.getMessage()));
-        }
-    }
 
 
 

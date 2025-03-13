@@ -24,7 +24,7 @@ import static java.sql.Types.NULL;
 
 public class SqlGamesData implements GameDAO {
     public SqlGamesData() throws ResponseException {
-        configureDatabase();
+        configureDatabase(createStatements);
     };
 
     public int createGame(String gameName) throws ResponseException{
@@ -127,7 +127,7 @@ public class SqlGamesData implements GameDAO {
             """
     };
 
-    private void configureDatabase() throws ResponseException {
+     static void configureDatabase(String[] createStatements) throws ResponseException {
         DatabaseManager.createDatabase();
         try (var conn = DatabaseManager.getConnection()) {
             for (var statement : createStatements) {
