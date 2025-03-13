@@ -169,7 +169,7 @@ public class TestDataAccess {
 
     @Test
     @DisplayName("List Games Success")
-    public void ListGamesDataSuccess() throws ResponseException {
+    public void listGamesDataSuccess() throws ResponseException {
         gameDAO.clearGames();
         gameDAO.createGame("game1");
         Assertions.assertNotEquals(new ArrayList<GameData>(),gameDAO.listGames());
@@ -177,7 +177,7 @@ public class TestDataAccess {
 
     @Test
     @DisplayName("List Games Faliure")
-    public void ListGamesDataFaliure() throws ResponseException {
+    public void listGamesDataFaliure() throws ResponseException {
         gameDAO.clearGames();
         Assertions.assertEquals(new ArrayList<GameData>(),gameDAO.listGames());
     }
