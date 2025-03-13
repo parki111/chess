@@ -12,8 +12,10 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
@@ -28,15 +30,30 @@ public class SqlGamesData implements GameDAO {
     public int createGame(String gameName) throws ResponseException{
         var statement = "INSERT INTO gameData (whiteUsername,blackUsername,gameName,chessgame) VALUES (?, ?, ?, ?)";
 
-        return executeUpdate(statement,"","",gameName,(new Gson()).toJson(new ChessGame()));
+        return executeUpdate(statement,"null","null",gameName,(new Gson()).toJson(new ChessGame()));
     };
 
 
-    public Collection<GameData> listGames() throws ResponseException{return new HashSet<GameData>();};
+    public Collection<GameData> listGames() throws ResponseException{
+        var result = new ArrayList<GameData>();
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT id, whiteUsername, blackUsername, gameName, chessgame FROM gameData";
+            try (var ps = conn.prepareStatement(statement)) {
+                try (var rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        result.add(readGameData(rs));
+                        System.out.println("Number of games: " + result.size());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new ResponseException(500, String.format("Unable to read data: %s", e.getMessage()));
+        }
+        return result;}
 
     public GameData findGame(int gameID) throws ResponseException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT whiteUsername, blackUsername,gameName,chessgame FROM gameData WHERE id=?";
+            var statement = "SELECT id, whiteUsername, blackUsername,gameName,chessgame FROM gameData WHERE id=?";
             try (var ps = conn.prepareStatement(statement)) {
                 ps.setInt(1, gameID);
                 try (var rs = ps.executeQuery()) {
@@ -52,8 +69,32 @@ public class SqlGamesData implements GameDAO {
     };
 
     public Boolean updateGame(String username, String playerColor, GameData gameData) throws ResponseException{
-        return true;
+        GameData newGame;
+        if (Objects.equals(playerColor, "BLACK")){
+            if (!Objects.equals(gameData.blackUsername(), null)){
+                throw new ResponseException(403,"Error: already taken");
+            }
+            newGame = new GameData(gameData.gameID(), gameData.whiteUsername(), username, gameData.gameName(), gameData.game());
+            String sql = "UPDATE gameData SET whiteUsername = ?, blackUsername=?, gameName=?, chessgame=? WHERE id = ?";
+            executeUpdate(sql,newGame.whiteUsername(),newGame.blackUsername(),newGame.gameName(),newGame.game(),gameData.gameID());
+            return true;
+        }
+        else if (Objects.equals(playerColor, "WHITE")){
+            if (!Objects.equals(gameData.whiteUsername(), null)){
+                throw new ResponseException(403,"Error: already taken");
+            }
+            newGame = new GameData(gameData.gameID(), username, gameData.blackUsername(), gameData.gameName(), gameData.game());
+            String sql = "UPDATE gameData SET whiteUsername = ?, blackUsername=?, gameName=?, chessgame=? WHERE id = ?";
+            executeUpdate(sql,newGame.whiteUsername(),newGame.blackUsername(),newGame.gameName(),newGame.game(),gameData.gameID());
+            return true;
+        }
+        else{
+            throw new ResponseException(400,"Error: bad request");
+        }
+        //games.put(gameData.gameID(),newGame);
     }
+
+
     public void clearGames() throws ResponseException{
         var statement = "TRUNCATE gameData";
         executeUpdate(statement);
@@ -64,7 +105,7 @@ public class SqlGamesData implements GameDAO {
         String whiteUsername = rs.getString("whiteUsername");
         String blackUsername = rs.getString("blackUsername");
         String gameName = rs.getString("gameName");
-        String json = rs.getString("json");
+        String json = rs.getString("chessgame");
         ChessGame chessgame = new Gson().fromJson(json, ChessGame.class);
         return new GameData(id,whiteUsername,blackUsername,gameName,chessgame);
     }

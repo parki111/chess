@@ -28,6 +28,8 @@ public class TempTests {
         System.out.println(new_userData.email());
         userData.clearUserData();
         gamesData.createGame("game1");
+        GameData game=gamesData.findGame(1);
+        System.out.println(game.gameName());
 
 
         //dataThing.clearAuthData();
