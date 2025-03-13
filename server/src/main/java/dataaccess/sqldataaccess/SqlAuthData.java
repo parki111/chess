@@ -78,7 +78,7 @@ public class SqlAuthData implements AuthDAO {
                 for (var i = 0; i < params.length; i++) {
                     var param = params[i];
                     if (param instanceof String p) {ps.setString(i + 1, p);}
-                    else if (param == null) {ps.setNull(i + 1, NULL);}
+                    else if (param == null) {ps.setString(i + 1, null);}
                 }
                 ps.executeUpdate();
             }
