@@ -52,9 +52,9 @@ public class ServerFacade {
         return this.makeRequest("POST", path, request, request.authToken(), CreateGameResult.class);
     }
 
-    public JoinGameResult createGame(JoinGameRequest request) throws ResponseException {
+    public void joinGame(JoinGameRequest request) throws ResponseException {
         var path = "/game";
-        return this.makeRequest("POST", path, request, request.authToken(), CreateGameResult.class);
+        this.makeRequest("PUT", path, request, request.authToken(), null);
     }
 
     private <T> T makeRequest(String method, String path, Object body, String header, Class<T> responseClass) throws ResponseException {
