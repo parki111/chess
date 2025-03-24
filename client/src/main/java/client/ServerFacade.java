@@ -6,13 +6,12 @@ import exception.ResponseException;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
-import requestresponse.LoginRequest;
-import requestresponse.LoginResult;
-import requestresponse.RegisterRequest;
-import requestresponse.RegisterResult;
+import requestresponse.*;
 
 import java.io.*;
 import java.net.*;
+import java.util.Collection;
+import java.util.Map;
 
 public class ServerFacade {
 
@@ -25,40 +24,41 @@ public class ServerFacade {
 
     public RegisterResult register(RegisterRequest request) throws ResponseException {
         var path = "/user";
-        return this.makeRequest("POST", path, request, RegisterResult.class);
+        return this.makeRequest("POST", path, request, null, RegisterResult.class);
     }
 
     public LoginResult login(LoginRequest request) throws ResponseException {
         var path = "/session";
-        return this.makeRequest("POST", path, request, LoginResult.class);
+        return this.makeRequest("POST", path, request, null, LoginResult.class);
     }
 
-    public void logout(int id) throws ResponseException {
+    public void logout(LogoutRequest request) throws ResponseException {
         var path = "/session";
-        this.makeRequest("DELETE", path, null, null);
+        this.makeRequest("DELETE", path, null, request.authToken(),null);
     }
 
-    public void deleteAllPets() throws ResponseException {
-        var path = "/pet";
-        this.makeRequest("DELETE", path, null, null);
+    public void clear() throws ResponseException {
+        var path = "/db";
+        this.makeRequest("DELETE", path, null,null,null);
     }
 
-    public Pet[] listPets() throws ResponseException {
-        var path = "/pet";
-        record listPetResponse(Pet[] pet) {
-        }
-        var response = this.makeRequest("GET", path, null, listPetResponse.class);
-        return response.pet();
+    public ListGamesResult listGames() throws ResponseException {
+        var path = "/game";
+        var response = this.makeRequest("GET", path, null, null, ListGamesResult.class);
+        return response;
     }
 
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
+    private <T> T makeRequest(String method, String path, Object body, String header, Class<T> responseClass) throws ResponseException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
+            if (header !=null && !header.isEmpty()){
+                http.setRequestProperty("Authorization", String.format("Bearer %s",header));
+            }
 
-            writeBody(request, http);
+            writeBody(body, http);
             http.connect();
             throwIfNotSuccessful(http);
             return readBody(http, responseClass);
