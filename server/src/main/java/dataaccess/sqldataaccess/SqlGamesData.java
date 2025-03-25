@@ -51,7 +51,10 @@ public class SqlGamesData implements GameDAO {
         }
         return result;}
 
-    public GameData findGame(int gameID) throws ResponseException {
+    public GameData findGame(Integer gameID) throws ResponseException {
+        if (gameID == null){
+            throw new ResponseException(400, "Error: Game does not exist");
+        }
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "SELECT id, whiteUsername, blackUsername,gameName,chessgame FROM gameData WHERE id=?";
             try (var ps = conn.prepareStatement(statement)) {

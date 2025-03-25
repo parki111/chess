@@ -31,7 +31,7 @@ public class UserServices {
             }
         }
         else{
-            throw new ResponseException(403,"Error: already taken");
+            throw new ResponseException(403,"Error: username already taken");
         }
 
     }
@@ -44,7 +44,7 @@ public class UserServices {
                 return new LoginResult(loginRequest.username(), authToken);
             }
             else{
-                throw new ResponseException(401,"Error: unauthorized");
+                throw new ResponseException(401,"Error: incorrect password");
             }
         }
         else{

@@ -25,7 +25,7 @@ public class MemoryGamesData implements GameDAO {
 //        }
     }
 
-    public GameData findGame(int gameID) throws ResponseException{
+    public GameData findGame(Integer gameID) throws ResponseException{
         if (games.containsKey(gameID)) {
             return games.get(gameID);
         }

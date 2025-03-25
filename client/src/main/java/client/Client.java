@@ -2,6 +2,8 @@ package client;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
@@ -18,8 +20,10 @@ import static chess.ChessGame.TeamColor.WHITE;
 
 public class Client {
     public Boolean printBoard=false;
+    private int userint;
     private String visitorName = null;
     private String authToken = null;
+    private HashMap<Integer,Integer> gameDatas;
     private final ServerFacade server;
     private ChessGame.TeamColor joinedColor = null;
     private final String serverUrl;
@@ -28,6 +32,11 @@ public class Client {
     public Client(String serverUrl) {
         server = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
+        this.gameDatas = new HashMap<>();
+        userint=1;
+
+
+
 //        this.notificationHandler = notificationHandler;
     }
 
@@ -53,23 +62,26 @@ public class Client {
     }
 
     public String register(String... params) throws ResponseException {
-        if (params.length >= 3) {
-            state = State.SIGNEDIN;
+        if (params.length == 3) {
+
             RegisterResult result = server.register(new RegisterRequest(params[0],params[1],params[2]));
             visitorName = result.username();
             authToken = result.authToken();
-            System.out.println(authToken);
+            state = State.SIGNEDIN;
+            server.listGames(new ListGamesRequest(authToken));
+
             return String.format("You registered as %s.", visitorName);
         }
         throw new ResponseException(400, "Expected: <username> <password> <email>");
     }
 
     public String login(String... params) throws ResponseException {
-        if (params.length >= 2) {
-            state = State.SIGNEDIN;
+        if (params.length == 2) {
             LoginResult result = server.login(new LoginRequest(params[0],params[1]));
             visitorName = result.username();
             authToken = result.authToken();
+            state = State.SIGNEDIN;
+            server.listGames(new ListGamesRequest(authToken));
             return String.format("You signed in as %s.", visitorName);
         }
         throw new ResponseException(400, "Expected: <username> <password>");
@@ -92,19 +104,26 @@ public class Client {
         Collection<GameData> games = result.games();
         var resultStr = new StringBuilder();
         var gson = new Gson();
+        userint=1;
         for (var game : games) {
-            resultStr.append(gson.toJson(game)).append('\n');
+            gameDatas.put(userint,game.gameID());
+
+            resultStr.append(String.format("Gameid: %s   Gamename: %s   WhiteUser: %s   BlackUser: %s\n"
+                    ,userint,game.gameName(),game.whiteUsername(),game.blackUsername()));
+            userint++;
         }
         return resultStr.toString();
     }
 
     public String createGame(String... params) throws ResponseException{
         assertSignedIn();
-        System.out.println(authToken);
+
         if (authToken!=null && !authToken.isEmpty()) {
-            System.out.println(authToken);
-            if (params.length>=1){
-                server.createGame(new CreateGameRequest(authToken,params[0]));
+
+            if (params.length==1){
+                CreateGameResult result = server.createGame(new CreateGameRequest(authToken,params[0]));
+                userint++;
+                gameDatas.put(userint,result.gameID());
                 return String.format("New game %s created", params[0]);
             }
             throw new ResponseException(400, "Expected: <gamename>");
@@ -115,8 +134,13 @@ public class Client {
     public String joinGame(String... params) throws ResponseException{
         assertSignedIn();
         if (authToken!=null && !authToken.isEmpty()) {
-            if (params.length>=2){
-                server.joinGame(new JoinGameRequest(authToken,params[0],Integer.parseInt(params[1])));
+            if (params.length==2){
+                try {
+                    Integer.parseInt(params[1]);
+                }
+                catch(NumberFormatException error){
+                    throw new ResponseException(400, "Expected: <playercolor> <gameid>");
+                }
                 if (params[0].equalsIgnoreCase("WHITE")){
                     joinedColor=WHITE;
                 }
@@ -124,10 +148,12 @@ public class Client {
                     joinedColor=BLACK;
                 }
                 else{
-                    throw new ResponseException(400, "Expected: <playercolor> <gamename>");
+                    throw new ResponseException(400, "Expected: <playercolor> <gameid>");
                 }
+
+                server.joinGame(new JoinGameRequest(authToken,params[0],gameDatas.get(Integer.parseInt(params[1]))));
                 printBoard=true;
-                return String.format("New game %s created", params[0]);
+                return String.format("Joined game %s as %s", params[1],params[0]);
             }
             throw new ResponseException(400, "Expected: <playercolor> <gameid>");
         }
@@ -136,9 +162,15 @@ public class Client {
 
     public String observeGame(String... params) throws ResponseException{
         assertSignedIn();
-        printBoard=true;
-        if (authToken!=null && !authToken.isEmpty()) {return "";}
-        throw new ResponseException(400, "unauthorized");
+
+        if (gameDatas.containsKey(Integer.parseInt(params[0]))){
+            printBoard=true;
+        }
+        else{
+            throw new ResponseException(400, "Game does not exist");
+        }
+        return "";
+
     }
 
     public String help() {
@@ -146,6 +178,7 @@ public class Client {
             return """
                     - register <username> <password> <email>
                     - login <username> <password>
+                    - help
                     - quit
                     """;
         }
@@ -155,6 +188,7 @@ public class Client {
                 - playgame <playercolor> <gameid>
                 - observegame <gameid>
                 - logout
+                - help
                 - quit
                 """;
     }

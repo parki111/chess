@@ -1,4 +1,4 @@
 package requestresponse;
 
-public record JoinGameRequestHelper (String playerColor, int gameID) {
+public record JoinGameRequestHelper (String playerColor, Integer gameID) {
 }

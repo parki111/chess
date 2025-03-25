@@ -49,7 +49,7 @@ public class ServerFacade {
 
     public CreateGameResult createGame(CreateGameRequest request) throws ResponseException {
         var path = "/game";
-        System.out.println("serverFacade");
+
         return this.makeRequest("POST", path, request, request.authToken(), CreateGameResult.class);
     }
 
@@ -94,11 +94,12 @@ public class ServerFacade {
         var status = http.getResponseCode();
         if (!isSuccessful(status)) {
             try (InputStream respErr = http.getErrorStream()) {
-                if (respErr != null) {
-                    throw ResponseException.fromJson(respErr);
+                InputStreamReader reader = new InputStreamReader(respErr);
+                if (respErr != null && reader!=null) {
+                    ErrorMessage error = new Gson().fromJson(reader,ErrorMessage.class);
+                    throw new ResponseException(status,error.message());
                 }
             }
-
             throw new ResponseException(status, "other failure: " + status);
         }
     }

@@ -32,13 +32,15 @@ public class GameServices {
 
     public void joinGame(JoinGameRequest joinGameRequest) throws ResponseException{
         if (authDAO.getAuthData(joinGameRequest.authToken()) != null) {
-            GameData game=gameDAO.findGame(joinGameRequest.gameID());
-            if(game!=null){
+            try{
+                GameData game=gameDAO.findGame(joinGameRequest.gameID());
                 gameDAO.updateGame(authDAO.getAuthData(joinGameRequest.authToken()).username(), joinGameRequest.playerColor(),game);
             }
-            else{
-                throw new ResponseException(400,"Error: bad request");
+            catch(ResponseException error){
+                throw new ResponseException(400,"Error: Game does not exist");
             }
+
+
 
         } else {
             throw new ResponseException(401, "Error: unauthorized");
