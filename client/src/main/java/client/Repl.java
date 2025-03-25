@@ -2,6 +2,7 @@ package client;
 
 import java.util.Scanner;
 import client.Client;
+import ui.ChessBoardUI;
 
 import static chess.ChessGame.TeamColor.BLACK;
 import static chess.ChessGame.TeamColor.WHITE;
@@ -31,14 +32,7 @@ public class Repl {
                 var msg = e.toString();
                 System.out.print(msg);
             }
-            if (result.equalsIgnoreCase("observegame") || result.equalsIgnoreCase("playgame")){
-                if (client.getJoinedColor()==WHITE){
-
-                }
-                else if (client.getJoinedColor()==BLACK){
-
-                }
-            }
+            printBoard(result);
         }
         System.out.println();
     }
@@ -47,4 +41,15 @@ public class Repl {
         System.out.print("\n" + RESET_TEXT_COLOR + ">>> " + SET_TEXT_COLOR_GREEN);
     }
 
+    public void printBoard(String result){
+        if (result.equalsIgnoreCase("observegame") || result.equalsIgnoreCase("playgame")){
+            if (client.getJoinedColor()==WHITE){
+                new ChessBoardUI().chessBoardWhite();
+            }
+            else{
+                new ChessBoardUI().chessBoardBlack();
+            }
+
+        }
+    }
 }
