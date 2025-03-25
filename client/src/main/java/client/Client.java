@@ -114,29 +114,6 @@ public class Client {
         throw new ResponseException(400, "unauthorized");
     }
 
-    public String rescuePet(String... params) throws ResponseException {
-        assertSignedIn();
-        if (params.length >= 2) {
-            var name = params[0];
-            var type = PetType.valueOf(params[1].toUpperCase());
-            var pet = new Pet(0, name, type);
-            pet = server.addPet(pet);
-            return String.format("You rescued %s. Assigned ID: %d", pet.name(), pet.id());
-        }
-        throw new ResponseException(400, "Expected: <name> <CAT|DOG|FROG>");
-    }
-
-    public String listPets() throws ResponseException {
-        assertSignedIn();
-        var pets = server.listPets();
-        var result = new StringBuilder();
-        var gson = new Gson();
-        for (var pet : pets) {
-            result.append(gson.toJson(pet)).append('\n');
-        }
-        return result.toString();
-    }
-
     public String adoptPet(String... params) throws ResponseException {
         assertSignedIn();
         if (params.length == 1) {
