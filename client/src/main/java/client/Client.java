@@ -3,13 +3,16 @@ package client;
 import java.util.Arrays;
 
 import com.google.gson.Gson;
-import model.Pet;
-import model.PetType;
+import model.GameData;
+import model.AuthData;
+import model.UserData;
 import exception.ResponseException;
 import client.ServerFacade;
+import requestresponse.*;
 
 public class Client {
     private String visitorName = null;
+    private String authToken = null;
     private final ServerFacade server;
     private final String serverUrl;
     private State state = State.SIGNEDOUT;
@@ -26,7 +29,7 @@ public class Client {
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
-                case "signin" -> signIn(params);
+                case "Login" -> login(params);
                 case "rescue" -> rescuePet(params);
                 case "list" -> listPets();
                 case "signout" -> signOut();
@@ -40,15 +43,70 @@ public class Client {
         }
     }
 
-    public String signIn(String... params) throws ResponseException {
-        if (params.length >= 1) {
+    public String register(String... params) throws ResponseException {
+        if (params.length >= 3) {
             state = State.SIGNEDIN;
-            visitorName = String.join("-", params);
-            ws = new WebSocketFacade(serverUrl, notificationHandler);
-            ws.enterPetShop(visitorName);
+            RegisterResult result = server.register(new RegisterRequest(params[0],params[1],params[2]));
+            visitorName = result.username();
+            authToken = result.authToken();
+            return String.format("You registered as %s.", visitorName);
+        }
+        throw new ResponseException(400, "Expected: <username> <password> <email>");
+    }
+
+    public String login(String... params) throws ResponseException {
+        if (params.length >= 2) {
+            state = State.SIGNEDIN;
+            LoginResult result = server.login(new LoginRequest(params[0],params[1]));
+            visitorName = params[0];
+            authToken = result.authToken();
             return String.format("You signed in as %s.", visitorName);
         }
-        throw new ResponseException(400, "Expected: <yourname>");
+        throw new ResponseException(400, "Expected: <username> <password>");
+    }
+
+    public String logout() throws ResponseException {
+        assertSignedIn();
+        if (authToken!=null && !authToken.isEmpty()){
+            state = State.SIGNEDOUT;
+            server.logout(new LogoutRequest(authToken));
+            authToken=null;
+            return String.format("%s logged out", visitorName);
+        }
+        throw new ResponseException(400, "Expected: <>");
+    }
+
+    public String listGames() throws ResponseException {
+        assertSignedIn();
+        if (authToken!=null && !authToken.isEmpty()) {
+            server.listGames(new ListGamesRequest(authToken));
+            return String.format("Current Games:");
+        }
+        throw new ResponseException(400, "unauthorized");
+    }
+
+    public String createGame(String... params) throws ResponseException{
+        assertSignedIn();
+        if (authToken!=null && !authToken.isEmpty()) {
+            if (params.length>=1){
+                server.createGame(new CreateGameRequest(authToken,params[0]));
+                return String.format("New game %s created", params[0]);
+            }
+            throw new ResponseException(400, "Expected: <gamename>");
+        }
+        throw new ResponseException(400, "unauthorized");
+    }
+
+    public String joinGame(String... params) throws ResponseException{
+        assertSignedIn();
+        if (authToken!=null && !authToken.isEmpty()) {
+            if (params.length>=2){
+                server.createGame(new JoinGameRequest(authToken,params[0]));
+                return String.format("New game %s created", params[0]);
+            }
+            throw new ResponseException(400, "Expected: <gamename>");
+        }
+        throw new ResponseException(400, "unauthorized");
     }
 
     public String rescuePet(String... params) throws ResponseException {
