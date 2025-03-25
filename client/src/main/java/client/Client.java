@@ -36,6 +36,7 @@ public class Client {
                 case "listgames" -> listGames();
                 case "creategame" -> createGame(params);
                 case "playgame" -> joinGame(params);
+                case "observegame" -> observeGame(params);
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -113,6 +114,12 @@ public class Client {
         throw new ResponseException(400, "unauthorized");
     }
 
+    public String observeGame(String... params) throws ResponseException{
+        assertSignedIn();
+        if (authToken!=null && !authToken.isEmpty()) {return "";}
+        throw new ResponseException(400, "unauthorized");
+    }
+
     public String help() {
         if (state == State.SIGNEDOUT) {
             return """
@@ -125,6 +132,7 @@ public class Client {
                 - listgames
                 - creategame <gamename>
                 - playgame <gameid>
+                - observegame <gameid>
                 - logout
                 - quit
                 """;
