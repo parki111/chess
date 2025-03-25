@@ -1,6 +1,7 @@
 package client;
 
 import java.util.Arrays;
+import java.util.Collection;
 
 import com.google.gson.Gson;
 import model.GameData;
@@ -58,7 +59,7 @@ public class Client {
         if (params.length >= 2) {
             state = State.SIGNEDIN;
             LoginResult result = server.login(new LoginRequest(params[0],params[1]));
-            visitorName = params[0];
+            visitorName = result.username();
             authToken = result.authToken();
             return String.format("You signed in as %s.", visitorName);
         }
@@ -73,16 +74,20 @@ public class Client {
             authToken=null;
             return String.format("%s logged out", visitorName);
         }
-        throw new ResponseException(400, "Expected: <>");
+        throw new ResponseException(400, "Not logged in");
     }
 
     public String listGames() throws ResponseException {
         assertSignedIn();
-        if (authToken!=null && !authToken.isEmpty()) {
-            server.listGames(new ListGamesRequest(authToken));
-            return String.format("Current Games:");
+        assertSignedIn();
+        var result = server.listGames(new ListGamesRequest(authToken));
+        Collection<GameData> games = result.games();
+        var resultStr = new StringBuilder();
+        var gson = new Gson();
+        for (var game : games) {
+            resultStr.append(gson.toJson(game)).append('\n');
         }
-        throw new ResponseException(400, "unauthorized");
+        return result.toString();
     }
 
     public String createGame(String... params) throws ResponseException{
@@ -101,7 +106,7 @@ public class Client {
         assertSignedIn();
         if (authToken!=null && !authToken.isEmpty()) {
             if (params.length>=2){
-                server.createGame(new JoinGameRequest(authToken,params[0]));
+                server.joinGame(new JoinGameRequest(authToken,params[0],Integer.parseInt(params[1])));
                 return String.format("New game %s created", params[0]);
             }
             throw new ResponseException(400, "Expected: <gamename>");
