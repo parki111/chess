@@ -18,24 +18,24 @@ public class Client {
     private final String serverUrl;
     private State state = State.SIGNEDOUT;
 
-    public Client(String serverUrl, NotificationHandler notificationHandler) {
+    public Client(String serverUrl) {
         server = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
-        this.notificationHandler = notificationHandler;
+//        this.notificationHandler = notificationHandler;
     }
 
     public String eval(String input) {
         try {
-            var tokens = input.toLowerCase().split(" ");
-            var cmd = (tokens.length > 0) ? tokens[0] : "help";
+            var tokens = input.split(" ");
+            var cmd = (tokens.length > 0) ? tokens[0].toLowerCase() : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
-                case "Login" -> login(params);
-                case "rescue" -> rescuePet(params);
-                case "list" -> listPets();
-                case "signout" -> signOut();
-                case "adopt" -> adoptPet(params);
-                case "adoptall" -> adoptAllPets();
+                case "register" -> register(params);
+                case "login" -> login(params);
+                case "logout" -> logout();
+                case "listgames" -> listGames();
+                case "creategame" -> createGame(params);
+                case "playgame" -> joinGame(params);
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -79,7 +79,6 @@ public class Client {
 
     public String listGames() throws ResponseException {
         assertSignedIn();
-        assertSignedIn();
         var result = server.listGames(new ListGamesRequest(authToken));
         Collection<GameData> games = result.games();
         var resultStr = new StringBuilder();
@@ -87,7 +86,7 @@ public class Client {
         for (var game : games) {
             resultStr.append(gson.toJson(game)).append('\n');
         }
-        return result.toString();
+        return resultStr.toString();
     }
 
     public String createGame(String... params) throws ResponseException{
@@ -114,61 +113,19 @@ public class Client {
         throw new ResponseException(400, "unauthorized");
     }
 
-    public String adoptPet(String... params) throws ResponseException {
-        assertSignedIn();
-        if (params.length == 1) {
-            try {
-                var id = Integer.parseInt(params[0]);
-                var pet = getPet(id);
-                if (pet != null) {
-                    server.deletePet(id);
-                    return String.format("%s says %s", pet.name(), pet.sound());
-                }
-            } catch (NumberFormatException ignored) {
-            }
-        }
-        throw new ResponseException(400, "Expected: <pet id>");
-    }
-
-    public String adoptAllPets() throws ResponseException {
-        assertSignedIn();
-        var buffer = new StringBuilder();
-        for (var pet : server.listPets()) {
-            buffer.append(String.format("%s says %s%n", pet.name(), pet.sound()));
-        }
-
-        server.deleteAllPets();
-        return buffer.toString();
-    }
-
-    public String signOut() throws ResponseException {
-        assertSignedIn();
-        state = State.SIGNEDOUT;
-        return String.format("%s left the shop", visitorName);
-    }
-
-    private Pet getPet(int id) throws ResponseException {
-        for (var pet : server.listPets()) {
-            if (pet.id() == id) {
-                return pet;
-            }
-        }
-        return null;
-    }
-
     public String help() {
         if (state == State.SIGNEDOUT) {
             return """
-                    - signIn <yourname>
+                    - register <username> <password> <email>
+                    - login <username> <password>
                     - quit
                     """;
         }
         return """
-                - list
-                - adopt <pet id>
-                - rescue <name> <CAT|DOG|FROG|FISH>
-                - adoptAll
-                - signOut
+                - listgames
+                - creategame <gamename>
+                - playgame <gameid>
+                - logout
                 - quit
                 """;
     }

@@ -5,10 +5,10 @@ import java.util.Scanner;
 import static ui.EscapeSequences.*;
 
 public class Repl {
-    private final PetClient client;
+    private final Client client;
 
     public Repl(String serverUrl) {
-        client = new PetClient(serverUrl, this);
+        client = new Client(serverUrl, this);
     }
 
     public void run() {
