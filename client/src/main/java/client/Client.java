@@ -57,6 +57,7 @@ public class Client {
             RegisterResult result = server.register(new RegisterRequest(params[0],params[1],params[2]));
             visitorName = result.username();
             authToken = result.authToken();
+            System.out.println(authToken);
             return String.format("You registered as %s.", visitorName);
         }
         throw new ResponseException(400, "Expected: <username> <password> <email>");
@@ -98,7 +99,9 @@ public class Client {
 
     public String createGame(String... params) throws ResponseException{
         assertSignedIn();
+        System.out.println(authToken);
         if (authToken!=null && !authToken.isEmpty()) {
+            System.out.println(authToken);
             if (params.length>=1){
                 server.createGame(new CreateGameRequest(authToken,params[0]));
                 return String.format("New game %s created", params[0]);
