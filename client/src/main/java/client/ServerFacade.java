@@ -65,7 +65,7 @@ public class ServerFacade {
             http.setRequestMethod(method);
             http.setDoOutput(true);
             if (header !=null && !header.isEmpty()){
-                http.setRequestProperty("Authorization", String.format("Bearer %s",header));
+                http.setRequestProperty("Authorization", String.format("%s",header));
             }
 
             writeBody(body, http);
