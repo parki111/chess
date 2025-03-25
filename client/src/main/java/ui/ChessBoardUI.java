@@ -62,7 +62,7 @@ public class ChessBoardUI {
             }
         }
         System.out.print(SET_BG_COLOR_LIGHT_GREY+SET_TEXT_COLOR_BLACK+" 1 "+RESET_BG_COLOR);
-        System.out.print("\n"+SET_BG_COLOR_LIGHT_GREY + SET_TEXT_COLOR_BLACK + "    a  b  c  d  e  f  g  h    "+RESET_BG_COLOR);
+        System.out.print("\n"+SET_BG_COLOR_LIGHT_GREY + SET_TEXT_COLOR_BLACK + "    a  b  c  d  e  f  g  h    "+RESET_BG_COLOR+"\n");
     }
 
 
@@ -122,6 +122,6 @@ public class ChessBoardUI {
             }
         }
         System.out.print(SET_BG_COLOR_LIGHT_GREY+SET_TEXT_COLOR_BLACK+" 8 "+RESET_BG_COLOR+"\n");
-        System.out.print(SET_BG_COLOR_LIGHT_GREY + SET_TEXT_COLOR_BLACK + "    h  g  f  e  d  c  b  a    "+RESET_BG_COLOR);
+        System.out.print(SET_BG_COLOR_LIGHT_GREY + SET_TEXT_COLOR_BLACK + "    h  g  f  e  d  c  b  a    "+RESET_BG_COLOR+"\n");
     }
 }

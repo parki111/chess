@@ -17,6 +17,7 @@ import static chess.ChessGame.TeamColor.WHITE;
 
 
 public class Client {
+    public Boolean printBoard=false;
     private String visitorName = null;
     private String authToken = null;
     private final ServerFacade server;
@@ -125,15 +126,17 @@ public class Client {
                 else{
                     throw new ResponseException(400, "Expected: <playercolor> <gamename>");
                 }
+                printBoard=true;
                 return String.format("New game %s created", params[0]);
             }
-            throw new ResponseException(400, "Expected: <playercolor> <gamename>");
+            throw new ResponseException(400, "Expected: <playercolor> <gameid>");
         }
         throw new ResponseException(400, "unauthorized");
     }
 
     public String observeGame(String... params) throws ResponseException{
         assertSignedIn();
+        printBoard=true;
         if (authToken!=null && !authToken.isEmpty()) {return "";}
         throw new ResponseException(400, "unauthorized");
     }
@@ -149,7 +152,7 @@ public class Client {
         return """
                 - listgames
                 - creategame <gamename>
-                - playgame <gameid>
+                - playgame <playercolor> <gameid>
                 - observegame <gameid>
                 - logout
                 - quit

@@ -22,6 +22,7 @@ public class Repl {
         Scanner scanner = new Scanner(System.in);
         var result = "";
         while (!result.equals("quit")) {
+            client.printBoard=false;
             printPrompt();
             String line = scanner.nextLine();
 
@@ -32,7 +33,7 @@ public class Repl {
                 var msg = e.toString();
                 System.out.print(msg);
             }
-            printBoard(result);
+            printBoard();
         }
         System.out.println();
     }
@@ -41,8 +42,8 @@ public class Repl {
         System.out.print("\n" + RESET_TEXT_COLOR + ">>> " + SET_TEXT_COLOR_GREEN);
     }
 
-    public void printBoard(String result){
-        if (result.equalsIgnoreCase("observegame") || result.equalsIgnoreCase("playgame")){
+    public void printBoard(){
+        if (client.printBoard){
             if (client.getJoinedColor()==WHITE){
                 new ChessBoardUI().chessBoardWhite();
             }
