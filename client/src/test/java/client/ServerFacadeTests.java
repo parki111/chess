@@ -161,7 +161,7 @@ public class ServerFacadeTests {
 
     @Test
     @DisplayName("Clear Success")
-    public void ClearSuccess() throws ResponseException {
+    public void clearSuccess() throws ResponseException {
         RegisterRequest request1 = new RegisterRequest("username","pass","email");
         serverFacade.register(request1);
         serverFacade.clear();
