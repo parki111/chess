@@ -3,6 +3,7 @@ package client;
 import java.util.Arrays;
 import java.util.Collection;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import model.GameData;
 import model.AuthData;
@@ -11,10 +12,15 @@ import exception.ResponseException;
 import client.ServerFacade;
 import requestresponse.*;
 
+import static chess.ChessGame.TeamColor.BLACK;
+import static chess.ChessGame.TeamColor.WHITE;
+
+
 public class Client {
     private String visitorName = null;
     private String authToken = null;
     private final ServerFacade server;
+    private ChessGame.TeamColor joinedColor = null;
     private final String serverUrl;
     private State state = State.SIGNEDOUT;
 
@@ -107,9 +113,18 @@ public class Client {
         if (authToken!=null && !authToken.isEmpty()) {
             if (params.length>=2){
                 server.joinGame(new JoinGameRequest(authToken,params[0],Integer.parseInt(params[1])));
+                if (params[0].equalsIgnoreCase("WHITE")){
+                    joinedColor=WHITE;
+                }
+                else if(params[0].equalsIgnoreCase("BLACK")){
+                    joinedColor=BLACK;
+                }
+                else{
+                    throw new ResponseException(400, "Expected: <playercolor> <gamename>");
+                }
                 return String.format("New game %s created", params[0]);
             }
-            throw new ResponseException(400, "Expected: <gamename>");
+            throw new ResponseException(400, "Expected: <playercolor> <gamename>");
         }
         throw new ResponseException(400, "unauthorized");
     }

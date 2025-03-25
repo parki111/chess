@@ -28,6 +28,9 @@ public class Repl {
                 var msg = e.toString();
                 System.out.print(msg);
             }
+            if (result.equals("observegame") || result.equals("playgame")){
+
+            }
         }
         System.out.println();
     }
