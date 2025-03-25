@@ -1,7 +1,10 @@
 package client;
 
 import java.util.Scanner;
+import client.Client;
 
+import static chess.ChessGame.TeamColor.BLACK;
+import static chess.ChessGame.TeamColor.WHITE;
 import static ui.EscapeSequences.*;
 
 public class Repl {
@@ -28,8 +31,13 @@ public class Repl {
                 var msg = e.toString();
                 System.out.print(msg);
             }
-            if (result.equals("observegame") || result.equals("playgame")){
+            if (result.equalsIgnoreCase("observegame") || result.equalsIgnoreCase("playgame")){
+                if (client.getJoinedColor()==WHITE){
 
+                }
+                else if (client.getJoinedColor()==BLACK){
+
+                }
             }
         }
         System.out.println();
