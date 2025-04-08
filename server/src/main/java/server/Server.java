@@ -9,6 +9,8 @@ import dataaccess.sqldataaccess.SqlAuthData;
 import dataaccess.sqldataaccess.SqlGamesData;
 import dataaccess.sqldataaccess.SqlUserData;
 import exception.ResponseException;
+import server.websocket.WebSocketHandler;
+import server.websocket.WebSocketSessions;
 import spark.*;
 
 public class Server {
@@ -18,11 +20,13 @@ public class Server {
         AuthDAO authDAO;
         UserDAO userDAO;
         GameDAO gameDAO;
+        WebSocketHandler webSocketHandler;
         try {
             authDAO = new SqlAuthData();
             userDAO = new SqlUserData();
             gameDAO = new SqlGamesData();
-
+            webSocketHandler = new WebSocketHandler();
+            Spark.webSocket("/ws", webSocketHandler);
         }
         catch (Throwable Exception) {
             authDAO = new MemoryAuthData();
