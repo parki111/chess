@@ -21,12 +21,11 @@ public class Server {
         UserDAO userDAO;
         GameDAO gameDAO;
         WebSocketHandler webSocketHandler;
+        webSocketHandler = new WebSocketHandler();
         try {
             authDAO = new SqlAuthData();
             userDAO = new SqlUserData();
             gameDAO = new SqlGamesData();
-            webSocketHandler = new WebSocketHandler();
-            Spark.webSocket("/ws", WebSocketHandler.class);
         }
         catch (Throwable Exception) {
             authDAO = new MemoryAuthData();
@@ -37,7 +36,7 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
-
+        Spark.webSocket("/ws", webSocketHandler);
         Spark.delete("/db", handler::clear);
         Spark.post("/user",handler::register);
         Spark.post("/session",handler::login);
