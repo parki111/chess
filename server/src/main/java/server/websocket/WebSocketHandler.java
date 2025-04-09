@@ -1,6 +1,6 @@
 package server.websocket;
 
-import chess.ChessGame;
+import chess.*;
 import dataaccess.AuthDAO;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
@@ -24,6 +24,8 @@ import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Objects;
 
 @WebSocket
 public class WebSocketHandler {
@@ -51,7 +53,7 @@ public class WebSocketHandler {
     }
 
     @OnWebSocketMessage
-    public void onMessage(Session session, String userJsonString) throws ResponseException {
+    public void onMessage(Session session, String userJsonString) throws ResponseException, InvalidMoveException {
         UserGameCommand gameCommand = new Gson().fromJson(userJsonString, UserGameCommand.class);
         errorPresent(gameCommand,session);
             switch (gameCommand.getCommandType()) {
@@ -105,13 +107,54 @@ public class WebSocketHandler {
 
     }
 
-    public void makeMove(UserGameCommand command, Session session) throws ResponseException {
+    public void makeMove(MakeMoveCommand command, Session session) throws ResponseException, InvalidMoveException {
         GameData gameData = gameDAO.findGame(command.getGameID());
+        AuthData authData = authDAO.getAuthData(command.getAuthToken());
+        String username = authData.username();
         ChessGame game = gameData.game();
+        ChessMove requestedMove = command.getMove();
 
+        Collection<ChessMove> validMoves = game.validMoves(command.getMove().getStartPosition());
+        ChessPosition endPosition = requestedMove.getEndPosition();
+        ChessPiece piece = game.getBoard().getPiece(requestedMove.getStartPosition());
+        game.makeMove(requestedMove);   //might need to throw an exception if just calling it doesn't throw an invalid move
+        ChessGame.TeamColor pieceColor;
+        ChessGame.TeamColor enemyColor;
+        if (piece.getTeamColor()== ChessGame.TeamColor.BLACK){
+            enemyColor = ChessGame.TeamColor.WHITE;
+            pieceColor = ChessGame.TeamColor.BLACK;
+        }
+        else{
+            enemyColor = ChessGame.TeamColor.BLACK;
+            pieceColor = ChessGame.TeamColor.WHITE;
+        }
 
-//        sendMessage(new LoadGameMessage(game),session);
+        gameDAO.updateGame(username,pieceColor.toString(),gameData); //is game actually updating in SQL?
+
+        LoadGameMessage message = new LoadGameMessage(game);
+        broadcastMessage(message,session,command.getGameID()); //send message to you and everyone else
+        sendMessage(message,session);
+        broadcastMessage(new NotificationMessage(username+" moved "+piece+"from "+requestedMove.getStartPosition()+
+                " to "+endPosition),session,command.getGameID()); //send message to everyone else with move made
+
+        NotificationMessage possibleEndGame;
+        if (game.isInCheck(enemyColor)){
+            possibleEndGame = new NotificationMessage(enemyColor.toString()+"is in check!");
+            sendMessage(possibleEndGame,session);
+            broadcastMessage(possibleEndGame,session,command.getGameID());
+        }
+        else if (game.isInStalemate(enemyColor)){
+            possibleEndGame = new NotificationMessage("Game ends in stalemate!");
+            sendMessage(possibleEndGame,session);
+            broadcastMessage(possibleEndGame,session,command.getGameID());
+        }
+        else if (game.isInCheckmate(enemyColor)){
+            possibleEndGame = new NotificationMessage("Game ends in checkmate! " + pieceColor + " wins!");
+            sendMessage(possibleEndGame,session);
+            broadcastMessage(possibleEndGame,session,command.getGameID());
+        }
     }
+
 
     public void leave(UserGameCommand command, Session session){
 

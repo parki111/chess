@@ -16,6 +16,7 @@ public class ChessPiece {
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.teamColor = pieceColor;
+
         this.pieceType = type;
 
     }
@@ -50,8 +51,8 @@ public class ChessPiece {
     }
 
     public String toString() {
-        char color = teamColor.toString().charAt(0);
-        char type = pieceType.toString().charAt(0);
+        String color = teamColor.toString(); //change back to char with char.At(0) if needed
+        String type = pieceType.toString();  //change back to char with char.At(0) if needed.
         return ("" + color + type);
     }
 

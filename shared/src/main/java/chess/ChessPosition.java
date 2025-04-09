@@ -1,5 +1,7 @@
 package chess;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -11,6 +13,7 @@ import java.util.Objects;
 public class ChessPosition {
     private int row;
     private int column;
+    private List<String> columnLetters = List.of("A","B","C","D","E","F","G","H");
     public ChessPosition(int row, int col) {
         this.row = row;
         this.column = col;
@@ -30,6 +33,11 @@ public class ChessPosition {
      */
     public int getColumn() {
         return column;
+    }
+
+    @Override
+    public String toString() {
+        return columnLetters.get(column-1)+row+"";
     }
 
     @Override

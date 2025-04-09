@@ -85,7 +85,7 @@ public class ChessGame {
         ChessPosition pos = move.getStartPosition();
         if (chessBoard.getPiece(pos)!=null) {
             if (whoseTurn != chessBoard.getPiece(pos).getTeamColor()) {
-                throw new InvalidMoveException("WRONG");
+                throw new InvalidMoveException("Move not valid");
             }
         }
         ChessPosition endPos = move.getEndPosition();
