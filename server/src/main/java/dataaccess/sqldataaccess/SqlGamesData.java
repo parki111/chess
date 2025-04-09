@@ -78,7 +78,6 @@ public class SqlGamesData implements GameDAO {
             if (!Objects.equals(gameData.blackUsername(), null)){
                 throw new ResponseException(403,"Error: already taken");
             }
-            System.out.println("Updated Game");
             newGame = new GameData(gameData.gameID(), gameData.whiteUsername(), username, gameData.gameName(), gameData.game());
             String sql = "UPDATE gameData SET whiteUsername = ?, blackUsername=?, gameName=?, chessgame=? WHERE id = ?";
             executeUpdate(sql,newGame.whiteUsername(),newGame.blackUsername(),newGame.gameName(),
@@ -101,6 +100,11 @@ public class SqlGamesData implements GameDAO {
         //games.put(gameData.gameID(),newGame);
     }
 
+    public void updateGameWebsocket(GameData gameData) throws ResponseException {
+        String sql = "UPDATE gameData SET whiteUsername = ?, blackUsername=?, chessgame=? WHERE id = ?";
+        executeUpdate(sql,gameData.whiteUsername(),gameData.blackUsername(),
+                gameData.gameName(),(new Gson()).toJson(gameData.game()),gameData.gameID());
+    }
 
     public void clearGames() throws ResponseException{
         var statement = "TRUNCATE gameData";

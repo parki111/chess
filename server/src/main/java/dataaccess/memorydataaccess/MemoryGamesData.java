@@ -53,6 +53,7 @@ public class MemoryGamesData implements GameDAO {
         return Boolean.TRUE;
     }
 
+    public void updateGameWebsocket(GameData gameData){}
 
     public void clearGames() throws ResponseException{
         games.clear();

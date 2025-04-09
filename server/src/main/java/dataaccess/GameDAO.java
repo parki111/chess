@@ -10,6 +10,7 @@ public interface GameDAO {
     Collection<GameData> listGames() throws ResponseException;
     GameData findGame(Integer gameID) throws ResponseException;
     Boolean updateGame(String username, String playerColor, GameData gameData) throws ResponseException;
+    void updateGameWebsocket(GameData gameData) throws ResponseException;
 //    Boolean deleteGame(String username, String playerColor, GameData gameData) throws ResponseException;
     void clearGames() throws ResponseException;
 }

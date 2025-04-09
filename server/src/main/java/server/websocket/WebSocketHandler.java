@@ -217,7 +217,7 @@ public class WebSocketHandler {
         ChessGame game = gameData.game();
 
         if (Objects.equals(username, gameData.blackUsername())){
-            gameDAO.updateGame(username, ChessGame.TeamColor.BLACK.toString(),
+            gameDAO.updateGameWebsocket(
                     new GameData(gameData.gameID(),gameData.whiteUsername(),null, gameData.gameName(), gameData.game()));
         }
         else{
