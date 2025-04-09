@@ -64,17 +64,18 @@ public class WebSocketHandler {
 
     @OnWebSocketMessage
     public void onMessage(Session session, String userJsonString) throws ResponseException, InvalidMoveException {
-        UserGameCommand gameCommand = new Gson().fromJson(userJsonString, UserGameCommand.class);
-        //errorPresent(gameCommand,session);
+        try {
+            UserGameCommand gameCommand = new Gson().fromJson(userJsonString, UserGameCommand.class);
+            //errorPresent(gameCommand,session);
 
-        GameData gameData = gameDAO.findGame(gameCommand.getGameID());
-        if (gameData==null){
-            throw new ResponseException(200,"Websocket connect No game with this gameID");
-        }
-        AuthData authData = authDAO.getAuthData(gameCommand.getAuthToken());
-        if (authData==null){
-            throw new ResponseException(200, "Websocket connect Not authorized");
-        }
+            GameData gameData = gameDAO.findGame(gameCommand.getGameID());
+            if (gameData == null) {
+                throw new ResponseException(200, "Websocket connect No game with this gameID");
+            }
+            AuthData authData = authDAO.getAuthData(gameCommand.getAuthToken());
+            if (authData == null) {
+                throw new ResponseException(200, "Websocket connect Not authorized");
+            }
             switch (gameCommand.getCommandType()) {
                 case CONNECT:
                     connect(gameCommand, session);
@@ -89,6 +90,10 @@ public class WebSocketHandler {
                 case RESIGN:
                     resign(gameCommand, session);
             }
+        }
+        catch(Exception e){
+            int x=3;
+        }
     }
 
     @OnWebSocketClose
@@ -156,8 +161,9 @@ public class WebSocketHandler {
         ChessMove requestedMove = command.getMove();
         //Collection<ChessMove> validMoves = game.validMoves(command.getMove().getStartPosition());
         ChessPosition endPosition = requestedMove.getEndPosition();
+        ChessPiece piece = null;
 
-        ChessPiece piece = game.getBoard().getPiece(command.getMove().getStartPosition());
+            piece = game.getBoard().getPiece(command.getMove().getStartPosition());
 
         System.out.println("calling makeMove");
         game.makeMove(requestedMove);   //might need to throw an exception if just calling it doesn't throw an invalid move
@@ -173,6 +179,7 @@ public class WebSocketHandler {
             pieceColor = ChessGame.TeamColor.WHITE;
         }
         System.out.println("calling makeMove");
+
         gameDAO.updateGame(username,pieceColor.toString(),gameData); //is game actually updating in SQL?
 
         LoadGameMessage message = new LoadGameMessage(game);

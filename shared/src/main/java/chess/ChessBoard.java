@@ -10,9 +10,9 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessBoard {
-    private Object[][] chessBoard;
+    private ChessPiece[][] chessBoard;
     public ChessBoard() {
-        chessBoard=new Object[8][8];
+        chessBoard=new ChessPiece[8][8];
     }
     /**
      * Adds a chess piece to the chessboard
@@ -74,7 +74,7 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        chessBoard=new Object[8][8];
+        chessBoard=new ChessPiece[8][8];
         initializeChessBoard();
     }
 

@@ -73,7 +73,7 @@ public class SqlGamesData implements GameDAO {
 
     public Boolean updateGame(String username, String playerColor, GameData gameData) throws ResponseException{
         GameData newGame;
-        System.out.println("Updated Game");
+
         if (Objects.equals(playerColor, "BLACK")){
             if (!Objects.equals(gameData.blackUsername(), null)){
                 throw new ResponseException(403,"Error: already taken");
