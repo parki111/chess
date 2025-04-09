@@ -34,7 +34,7 @@ public class WebSocketHandler {
     GameDAO gameDAO;
     UserDAO userDAO;
 
-    public void WebsocketHandler() throws ResponseException {
+    public WebSocketHandler() throws ResponseException {
         sessions = new WebSocketSessions();
         authDAO = new SqlAuthData();
         gameDAO = new SqlGamesData();
@@ -156,8 +156,21 @@ public class WebSocketHandler {
     }
 
 
-    public void leave(UserGameCommand command, Session session){
+    public void leave(UserGameCommand command, Session session) throws ResponseException {
+        AuthData authData = authDAO.getAuthData(command.getAuthToken());
+        String username = authData.username();
+        GameData gameData = gameDAO.findGame(command.getGameID());
+        ChessGame game = gameData.game();
 
+        if (Objects.equals(username, gameData.blackUsername())){
+            gameDAO.updateGame(username, ChessGame.TeamColor.BLACK.toString(),
+                    new GameData(gameData.gameID(),gameData.whiteUsername(),null, gameData.gameName(), gameData.game()));
+        }
+        else{
+            gameDAO.updateGame(username, ChessGame.TeamColor.BLACK.toString(),
+                    new GameData(gameData.gameID(),null,gameData.blackUsername(), gameData.gameName(), gameData.game()));
+        }
+        broadcastMessage(new NotificationMessage(username+"left the game."),session,command.getGameID());
     }
 
     public void resign(UserGameCommand command, Session session){

@@ -26,7 +26,7 @@ public class Server {
             userDAO = new SqlUserData();
             gameDAO = new SqlGamesData();
             webSocketHandler = new WebSocketHandler();
-            Spark.webSocket("/ws", webSocketHandler);
+            Spark.webSocket("/ws", WebSocketHandler.class);
         }
         catch (Throwable Exception) {
             authDAO = new MemoryAuthData();
