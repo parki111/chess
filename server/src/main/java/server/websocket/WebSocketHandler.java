@@ -64,18 +64,18 @@ public class WebSocketHandler {
 
     @OnWebSocketMessage
     public void onMessage(Session session, String userJsonString) throws ResponseException, InvalidMoveException {
-        try {
+//        try {
             UserGameCommand gameCommand = new Gson().fromJson(userJsonString, UserGameCommand.class);
             //errorPresent(gameCommand,session);
+        AuthData authData = authDAO.getAuthData(gameCommand.getAuthToken());
+        if (authData==null){
+            throw new ResponseException(400, "Websocket connect Not authorized");
+        }
+        GameData gameData = gameDAO.findGame(gameCommand.getGameID());
+        if (gameData==null){
+            throw new ResponseException(400,"Websocket connect No game with this gameID");
+        }
 
-            GameData gameData = gameDAO.findGame(gameCommand.getGameID());
-            if (gameData == null) {
-                throw new ResponseException(200, "Websocket connect No game with this gameID");
-            }
-            AuthData authData = authDAO.getAuthData(gameCommand.getAuthToken());
-            if (authData == null) {
-                throw new ResponseException(200, "Websocket connect Not authorized");
-            }
             switch (gameCommand.getCommandType()) {
                 case CONNECT:
                     connect(gameCommand, session);
@@ -90,10 +90,11 @@ public class WebSocketHandler {
                 case RESIGN:
                     resign(gameCommand, session);
             }
-        }
-        catch(Exception e){
-            int x=3;
-        }
+//        }
+//        catch(Exception e){
+//            int x=3;
+//            throw new ResponseException(200, "Error thing");
+//        }
     }
 
     @OnWebSocketClose
@@ -118,6 +119,10 @@ public class WebSocketHandler {
 
     public void connect(UserGameCommand command, Session session) throws ResponseException {
         sessions.addSession(command.getGameID(),session);
+        AuthData authData = authDAO.getAuthData(command.getAuthToken());
+        if (authData==null){
+            throw new ResponseException(200, "Websocket connect Not authorized");
+        }
         GameData gameData = gameDAO.findGame(command.getGameID());
         if (gameData==null){
             throw new ResponseException(200,"Websocket connect No game with this gameID");
@@ -126,10 +131,7 @@ public class WebSocketHandler {
         ChessGame game = gameData.game();
         sendMessage(new LoadGameMessage(game),session);
 
-        AuthData authData = authDAO.getAuthData(command.getAuthToken());
-        if (authData==null){
-            throw new ResponseException(200, "Websocket connect Not authorized");
-        }
+
         String username = authData.username();
         String role;
         if (Objects.equals(gameData.blackUsername(), username)) {
@@ -149,12 +151,12 @@ public class WebSocketHandler {
         System.out.println("calling makeMove");
         GameData gameData = gameDAO.findGame(command.getGameID());
         if (gameData==null){
-            throw new ResponseException(200,"Websocket connect No game with this gameID");
+            throw new ResponseException(400,"Websocket connect No game with this gameID");
         }
         AuthData authData = authDAO.getAuthData(command.getAuthToken());
         if (authData==null){
 //            System.out.println("didn't work");
-            throw new ResponseException(200, "Websocket connect Not authorized");
+            throw new ResponseException(400, "Websocket connect Not authorized");
         }
         String username = authData.username();
         ChessGame game = gameData.game();

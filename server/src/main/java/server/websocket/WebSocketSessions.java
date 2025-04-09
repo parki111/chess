@@ -14,8 +14,9 @@ public class WebSocketSessions {
     public void addSession(Integer gameID, Session session) {
         if (!sessions.containsKey(gameID)){
             sessions.put(gameID,new HashSet<>());
-            sessionsGameiD.put(session,gameID);
+
         }
+        sessionsGameiD.put(session,gameID);
         sessions.get(gameID).add(session);
     }
 
