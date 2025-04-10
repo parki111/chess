@@ -13,11 +13,13 @@ import static ui.EscapeSequences.RESET_BG_COLOR;
 public class ChessBoardUI {
     private ChessGame.TeamColor boardColor;
     private ChessBoard chessBoard;
+    private ChessGame chessGame;
     private HashMap<ChessPiece.PieceType,String> pieceCharacters = null;
 
-    public ChessBoardUI(ChessGame.TeamColor color, ChessBoard chessBoard){
+    public ChessBoardUI(ChessGame.TeamColor color, ChessGame chessGame){
         boardColor=color;
-        this.chessBoard=chessBoard;
+        this.chessGame = chessGame;
+        chessBoard=chessGame.getBoard();
         pieceCharacters= new HashMap<>();
         constructHashmap();
 

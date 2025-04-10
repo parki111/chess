@@ -47,10 +47,10 @@ public class Repl {
     public void printBoard(){
         if (client.printBoard){
             if (client.getJoinedColor()==WHITE){
-                new ChessBoardUI(ChessGame.TeamColor.WHITE,new ChessGame().getBoard()).chessBoardWhite();
+                new ChessBoardUI(ChessGame.TeamColor.WHITE,new ChessGame()).chessBoardWhite();
             }
             else{
-                new ChessBoardUI(ChessGame.TeamColor.BLACK,new ChessGame().getBoard()).chessBoardBlack();
+                new ChessBoardUI(ChessGame.TeamColor.BLACK,new ChessGame()).chessBoardBlack();
             }
 
         }
