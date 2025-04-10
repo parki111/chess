@@ -44,9 +44,7 @@ public class WebSocketHandler {
         userDAO = new SqlUserData();
         }
         catch (ResponseException r){
-
         }
-        
     }
 
 
@@ -64,7 +62,6 @@ public class WebSocketHandler {
 
     @OnWebSocketMessage
     public void onMessage(Session session, String userJsonString) throws ResponseException, InvalidMoveException {
-        try {
             UserGameCommand gameCommand = new Gson().fromJson(userJsonString, UserGameCommand.class);
             //errorPresent(gameCommand,session);
         AuthData authData = authDAO.getAuthData(gameCommand.getAuthToken());
@@ -90,11 +87,7 @@ public class WebSocketHandler {
                 case RESIGN:
                     resign(gameCommand, session);
             }
-        }
-        catch(Exception e){
-            int x=3;
-            throw new ResponseException(400, "Error thing");
-        }
+
     }
 
     @OnWebSocketClose
@@ -102,19 +95,6 @@ public class WebSocketHandler {
         sessions.removeSession(sessions.getGameID(session),session);
     }
 
-//    public void errorPresent(UserGameCommand gameCommand,Session session) throws ResponseException {
-//        try{
-//            GameData gamedata = gameDAO.findGame(gameCommand.getGameID());
-//        }
-//        catch(Exception e){
-//            throw new ResponseException(200,"error: game does not exist");
-//        }
-//        AuthData authdata = authDAO.getAuthData(gameCommand.getAuthToken());
-//        if (authdata==null){
-//            throw new ResponseException(400,"error: not authorized");
-//        }
-//
-//    }
 
 
     public void connect(UserGameCommand command, Session session) throws ResponseException {
