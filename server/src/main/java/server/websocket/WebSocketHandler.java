@@ -37,7 +37,7 @@ public class WebSocketHandler {
 
     public WebSocketHandler(){
         sessions = new WebSocketSessions();
-        System.out.println("WebSocketHandler constructor called.");
+
         try{
         authDAO = new SqlAuthData();
         gameDAO = new SqlGamesData();
@@ -46,7 +46,7 @@ public class WebSocketHandler {
         catch (ResponseException r){
 
         }
-        System.out.println("WebSocketHandler constructor finished.");
+        
     }
 
 
@@ -165,22 +165,34 @@ public class WebSocketHandler {
         ChessMove requestedMove = command.getMove();
         //Collection<ChessMove> validMoves = game.validMoves(command.getMove().getStartPosition());
         ChessPosition endPosition = requestedMove.getEndPosition();
-        ChessPiece piece = null;
+        ChessPiece piece;
 
-            piece = game.getBoard().getPiece(command.getMove().getStartPosition());
+        piece = game.getBoard().getPiece(command.getMove().getStartPosition());
 
         System.out.println("calling makeMove");
         game.makeMove(requestedMove);   //might need to throw an exception if just calling it doesn't throw an invalid move
-
+        ChessGame.TeamColor userColor;
         ChessGame.TeamColor pieceColor;
         ChessGame.TeamColor enemyColor;
-        if (piece.getTeamColor()== ChessGame.TeamColor.BLACK){
+        if (Objects.equals(gameData.blackUsername(), username)){
+            userColor= ChessGame.TeamColor.BLACK;
             enemyColor = ChessGame.TeamColor.WHITE;
+        }
+        else if (Objects.equals(gameData.whiteUsername(), username)){
+            userColor=ChessGame.TeamColor.WHITE;
+            enemyColor = ChessGame.TeamColor.BLACK;
+        }
+        else{
+            sendMessage(new ErrorMessage("Invalid request. You cannot move this piece."),session);return;
+        }
+        if (piece.getTeamColor()== ChessGame.TeamColor.BLACK){
             pieceColor = ChessGame.TeamColor.BLACK;
         }
         else{
-            enemyColor = ChessGame.TeamColor.BLACK;
             pieceColor = ChessGame.TeamColor.WHITE;
+        }
+        if (pieceColor!=userColor){
+            sendMessage(new ErrorMessage("Invalid request. You cannot move this piece."),session);return;
         }
         System.out.println("calling makeMove");
 
@@ -242,7 +254,7 @@ public class WebSocketHandler {
             sendMessage(new ErrorMessage("Game is over. Cannot resign."),session);
             return;
         }
-        if (username!=gameData.blackUsername() && username!=gameData.whiteUsername()){
+        if (!Objects.equals(username, gameData.blackUsername()) && !Objects.equals(username, gameData.whiteUsername())){
             sendMessage(new ErrorMessage("Observers cannot resign."),session);
             return;
         }
