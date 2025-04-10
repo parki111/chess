@@ -13,6 +13,7 @@ import model.UserData;
 import exception.ResponseException;
 import client.ServerFacade;
 import requestresponse.*;
+import ui.ChessBoardUI;
 
 import static chess.ChessGame.TeamColor.BLACK;
 import static chess.ChessGame.TeamColor.WHITE;
@@ -28,7 +29,7 @@ public class Client {
     private ChessGame.TeamColor joinedColor = null;
     private final String serverUrl;
     private State state = State.SIGNEDOUT;
-
+    private GameData currGame = null;
     public Client(String serverUrl) {
         server = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
@@ -53,12 +54,25 @@ public class Client {
                 case "creategame" -> createGame(params);
                 case "playgame" -> joinGame(params);
                 case "observegame" -> observeGame(params);
+                case "redraw" -> redrawBoard();
+                case "move" -> makeMove(params);
                 case "quit" -> "quit";
                 default -> help();
             };
         } catch (ResponseException ex) {
             return ex.getMessage();
         }
+    }
+
+    public String redrawBoard(){
+
+    }
+
+    public String makeMove(String...params){
+        if (params.length ==2){
+
+        }
+        throw new ResponseException("Expected: <PieceType> <Location>")
     }
 
     public String register(String... params) throws ResponseException {
@@ -152,12 +166,18 @@ public class Client {
                 }
 
                 server.joinGame(new JoinGameRequest(authToken,params[0],gameDatas.get(Integer.parseInt(params[1]))));
+
                 printBoard=true;
                 return String.format("Joined game %s as %s", params[1],params[0]);
             }
             throw new ResponseException(400, "Expected: <playercolor> <gameid>");
         }
         throw new ResponseException(400, "unauthorized");
+    }
+
+    public void updateGame(ChessGame chessGame){
+        printBoard=true;
+
     }
 
     public String observeGame(String... params) throws ResponseException{

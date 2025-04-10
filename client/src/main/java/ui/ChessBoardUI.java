@@ -1,9 +1,6 @@
 package ui;
 
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessPiece;
-import chess.ChessPosition;
+import chess.*;
 
 import java.util.*;
 
@@ -15,14 +12,25 @@ public class ChessBoardUI {
     private ChessBoard chessBoard;
     private ChessGame chessGame;
     private HashMap<ChessPiece.PieceType,String> pieceCharacters = null;
+    private ChessPosition validMovesPos;
+    private HashSet<ChessPosition> validMoves;
 
-    public ChessBoardUI(ChessGame.TeamColor color, ChessGame chessGame){
+    public ChessBoardUI(ChessGame.TeamColor color, ChessGame chessGame,ChessPosition validMovesPosition){
         boardColor=color;
+        validMovesPos=validMovesPosition;
         this.chessGame = chessGame;
         chessBoard=chessGame.getBoard();
         pieceCharacters= new HashMap<>();
+        validMoves=new HashSet<>();
         constructHashmap();
+        constructValidMoves();
 
+    }
+
+    private void constructValidMoves(){
+        for (ChessMove i:chessGame.validMoves(validMovesPos)){
+            validMoves.add(i.getEndPosition());
+        }
     }
 
     private void constructHashmap(){
@@ -52,10 +60,20 @@ public class ChessBoardUI {
                 for (int j=0;j<8;j++){
                     String colorBG;
                     if ((j+i)%2==0){
+
                         colorBG=SET_BG_COLOR_WHITE;
+                        if (validMovesPos!=null && validMoves.contains(new ChessPosition(i,j+1))){
+                            colorBG=SET_BG_COLOR_GREEN;
+                        }
                     }
                     else{
                         colorBG=SET_BG_COLOR_BLACK;
+                        if (validMovesPos!=null && validMoves.contains(new ChessPosition(i,j+1))){
+                            colorBG=SET_BG_COLOR_DARK_GREEN;
+                        }
+                    }
+                    if (validMovesPos!=null && validMovesPos.equals(new ChessPosition(i, j + 1))){
+                        colorBG=SET_BG_COLOR_YELLOW;
                     }
                     if(chessBoard.getPiece(new ChessPosition(i,j+1))!=null){
                         if (chessBoard.getPiece(new ChessPosition(i,j+1)).getTeamColor()== ChessGame.TeamColor.WHITE){
@@ -78,7 +96,6 @@ public class ChessBoardUI {
         }
         return orderedList;
     }
-
 
     public void chessBoardWhite(){
         List<String> whiteBoard=constructStringBoard();

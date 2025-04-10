@@ -3,6 +3,7 @@ package client;
 import java.util.Scanner;
 
 import chess.ChessGame;
+import chess.ChessPosition;
 import client.Client;
 import ui.ChessBoardUI;
 
@@ -47,10 +48,10 @@ public class Repl {
     public void printBoard(){
         if (client.printBoard){
             if (client.getJoinedColor()==WHITE){
-                new ChessBoardUI(ChessGame.TeamColor.WHITE,new ChessGame()).chessBoardWhite();
+                new ChessBoardUI(ChessGame.TeamColor.WHITE,new ChessGame(),new ChessPosition(2,2)).chessBoardWhite();
             }
             else{
-                new ChessBoardUI(ChessGame.TeamColor.BLACK,new ChessGame()).chessBoardBlack();
+                new ChessBoardUI(ChessGame.TeamColor.BLACK,new ChessGame(),new ChessPosition (2,2)).chessBoardBlack();
             }
 
         }
