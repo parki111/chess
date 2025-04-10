@@ -3,8 +3,10 @@ package client;
 import java.util.Scanner;
 
 import chess.ChessGame;
+import chess.ChessPiece;
 import chess.ChessPosition;
 import client.Client;
+import client.websocket.GameHandler;
 import exception.ResponseException;
 import ui.ChessBoardUI;
 
@@ -12,7 +14,7 @@ import static chess.ChessGame.TeamColor.BLACK;
 import static chess.ChessGame.TeamColor.WHITE;
 import static ui.EscapeSequences.*;
 
-public class Repl {
+public class Repl implements GameHandler {
     private final Client client;
 
     public Repl(String serverUrl) throws ResponseException {
@@ -56,5 +58,22 @@ public class Repl {
             }
 
         }
+    }
+
+    public void updateGame(ChessGame chessGame, ChessPiece validMoves) {
+        if (client.printBoard){
+            if (client.getJoinedColor()==WHITE){
+                new ChessBoardUI(ChessGame.TeamColor.WHITE,new ChessGame(),new ChessPosition(2,2)).chessBoardWhite();
+            }
+            else{
+                new ChessBoardUI(ChessGame.TeamColor.BLACK,new ChessGame(),new ChessPosition (2,2)).chessBoardBlack();
+            }
+
+        }
+    }
+
+
+    public void printMessage(String message) {
+
     }
 }

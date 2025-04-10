@@ -60,13 +60,28 @@ public class Client implements GameHandler {
                 case "playgame" -> joinGame(params);
                 case "observegame" -> observeGame(params);
                 case "redraw" -> redrawBoard();
+                case "leave" -> leave();
+                case "resign" -> resign();
                 case "move" -> makeMove(params);
+                case "legalmoves" -> printLegalMoves(params);
                 case "quit" -> "quit";
                 default -> help();
             };
         } catch (ResponseException ex) {
             return ex.getMessage();
         }
+    }
+
+    public String printLegalMoves(){
+
+    }
+
+    public String leave(){
+
+    }
+
+    public String resign(){
+
     }
 
     public String redrawBoard(){
@@ -79,6 +94,8 @@ public class Client implements GameHandler {
         }
         throw new ResponseException(400, "Expected: <PieceType> <Location>");
     }
+
+
 
     public String register(String... params) throws ResponseException {
         if (params.length == 3) {
@@ -181,14 +198,7 @@ public class Client implements GameHandler {
     }
 
 
-    public void updateGame(ChessGame chessGame, ChessPiece validMoves) {
 
-    }
-
-    @Override
-    public void printMessage() {
-
-    }
 
     public String observeGame(String... params) throws ResponseException{
         assertSignedIn();

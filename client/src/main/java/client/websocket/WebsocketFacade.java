@@ -44,11 +44,11 @@ public class WebsocketFacade extends Endpoint implements MessageHandler.Whole<St
         }
         else if(message.getServerMessageType() == ServerMessage.ServerMessageType.NOTIFICATION){
             NotificationMessage notificationMessage = new Gson().fromJson(messageReceived, NotificationMessage.class);
-            gameHandler.printMessage(notificationMessage.)
+            gameHandler.printMessage(notificationMessage.getMessage());
         }
         else{
             ErrorMessage errorMessage = new Gson().fromJson(messageReceived, ErrorMessage.class);
-
+            gameHandler.printMessage(errorMessage.getErrorMessage());
         }
     }
 

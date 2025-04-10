@@ -5,5 +5,5 @@ import chess.ChessPiece;
 
 public interface GameHandler {
     void updateGame(ChessGame chessGame, ChessPiece validMoves);
-    void printMessage();
+    void printMessage(String message);
 }
