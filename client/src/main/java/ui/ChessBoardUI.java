@@ -39,7 +39,7 @@ public class ChessBoardUI {
     public List<String> constructStringBoard(){
         List<String> orderedList = new ArrayList<>();
         List<String> rows = new ArrayList<>(Arrays.asList("  ", " 8 ", " 7 "," 6 "," 5 "," 4 "," 3 "," 2 "," 1 ","  "));
-        List<String> firstRow = new ArrayList<>(Arrays.asList(" a ", " b "," c "," d "," e "," f "," g "," h "));
+        List<String> firstRow = new ArrayList<>(Arrays.asList("  a ", " b "," c "," d "," e "," f "," g "," h "));
         String piece;
         for (int i=0;i<10;i++){
             piece = SET_BG_COLOR_DARK_GREY+SET_TEXT_COLOR_BLACK+rows.get(i);
@@ -52,7 +52,7 @@ public class ChessBoardUI {
             }else{
                 for (int j=0;j<8;j++){
                     String colorBG;
-                    if (j%2==0){
+                    if ((j+i)%2==0){
                         colorBG=SET_BG_COLOR_WHITE;
                     }
                     else{
@@ -68,12 +68,10 @@ public class ChessBoardUI {
                         piece=piece+pieceCharacters.get(chessBoard.getPiece(new ChessPosition(i,j+1)).getPieceType());
                     }
                     else{
-                        piece=" ";
+                        piece=colorBG+"   ";
                     }
-            }
-
-
-                orderedList.add(piece);
+                    orderedList.add(piece);
+                }
             }
             piece = SET_BG_COLOR_DARK_GREY+SET_TEXT_COLOR_BLACK+rows.get(i)+RESET_BG_COLOR+"\n";
             orderedList.add(piece);
