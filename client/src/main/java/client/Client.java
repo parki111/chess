@@ -72,7 +72,7 @@ public class Client {
         if (params.length ==2){
 
         }
-        throw new ResponseException("Expected: <PieceType> <Location>")
+        throw new ResponseException("Expected: <PieceType> <Location>");
     }
 
     public String register(String... params) throws ResponseException {
