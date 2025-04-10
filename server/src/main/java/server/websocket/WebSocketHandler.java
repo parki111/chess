@@ -150,16 +150,18 @@ public class WebSocketHandler {
     public void makeMove(MakeMoveCommand command, Session session) throws ResponseException, InvalidMoveException {
         System.out.println("calling makeMove");
         GameData gameData = gameDAO.findGame(command.getGameID());
-        if (gameData==null){
-            throw new ResponseException(400,"Websocket connect No game with this gameID");
-        }
+        if (gameData.game().isEndGame()){sendMessage(new ErrorMessage("Game is over. Cannot resign."),session);return;}
         AuthData authData = authDAO.getAuthData(command.getAuthToken());
         if (authData==null){
 //            System.out.println("didn't work");
             throw new ResponseException(400, "Websocket connect Not authorized");
         }
+
+
         String username = authData.username();
+
         ChessGame game = gameData.game();
+
         ChessMove requestedMove = command.getMove();
         //Collection<ChessMove> validMoves = game.validMoves(command.getMove().getStartPosition());
         ChessPosition endPosition = requestedMove.getEndPosition();
@@ -200,11 +202,13 @@ public class WebSocketHandler {
             possibleEndGame = new NotificationMessage("Game ends in stalemate!");
             sendMessage(possibleEndGame,session);
             broadcastMessage(possibleEndGame,session,command.getGameID());
+            gameData.game().setEndGame(true);
         }
         else if (game.isInCheckmate(enemyColor)){
             possibleEndGame = new NotificationMessage("Game ends in checkmate! " + pieceColor + " wins!");
             sendMessage(possibleEndGame,session);
             broadcastMessage(possibleEndGame,session,command.getGameID());
+            gameData.game().setEndGame(true);
         }
         System.out.println("calling makeMove");
     }
@@ -229,7 +233,24 @@ public class WebSocketHandler {
         sessions.removeSession(command.getGameID(), session);
     }
 
-    public void resign(UserGameCommand command, Session session){
+    public void resign(UserGameCommand command, Session session) throws ResponseException {
+
+        AuthData authData = authDAO.getAuthData(command.getAuthToken());
+        String username = authData.username();
+        GameData gameData = gameDAO.findGame(command.getGameID());
+        if (gameData.game().isEndGame()){
+            sendMessage(new ErrorMessage("Game is over. Cannot resign."),session);
+            return;
+        }
+        if (username!=gameData.blackUsername() && username!=gameData.whiteUsername()){
+            sendMessage(new ErrorMessage("Observers cannot resign."),session);
+            return;
+        }
+        gameData.game().setEndGame(true);
+        NotificationMessage resigned = new NotificationMessage(username+"has resigned. Game ended.");
+        sendMessage(resigned,session);
+        broadcastMessage(resigned,session,command.getGameID());
+        gameDAO.updateGameWebsocket(gameData);
 
     }
 

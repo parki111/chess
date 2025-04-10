@@ -12,10 +12,13 @@ import java.util.HashSet;
 public class ChessGame {
     TeamColor whoseTurn;
     ChessBoard chessBoard;
+    boolean endGame;
+
     public ChessGame() {
         whoseTurn=TeamColor.WHITE;
         chessBoard = new ChessBoard();
         chessBoard.initializeChessBoard();
+        endGame = false;
     }
 
     /**
@@ -23,6 +26,14 @@ public class ChessGame {
      */
     public TeamColor getTeamTurn() {
         return whoseTurn;
+    }
+
+    public void setEndGame(boolean endGame) {
+        this.endGame = endGame;
+    }
+
+    public boolean isEndGame() {
+        return endGame;
     }
 
     /**
