@@ -49,34 +49,43 @@ public class ChessBoardUI {
                     piece = SET_TEXT_COLOR_BLACK+firstRow.get(j);
                     orderedList.add(piece);
                 }
+            }else{
+                for (int j=0;j<8;j++){
+                    String colorBG;
+                    if (j%2==0){
+                        colorBG=SET_BG_COLOR_WHITE;
+                    }
+                    else{
+                        colorBG=SET_BG_COLOR_BLACK;
+                    }
+                    if(chessBoard.getPiece(new ChessPosition(i,j+1))!=null){
+                        if (chessBoard.getPiece(new ChessPosition(i,j+1)).getTeamColor()== ChessGame.TeamColor.WHITE){
+                            piece = colorBG+SET_TEXT_COLOR_LIGHT_GREY;
+                        }
+                        else{
+                            piece = colorBG+SET_TEXT_COLOR_DARK_GREY;
+                        }
+                        piece=piece+pieceCharacters.get(chessBoard.getPiece(new ChessPosition(i,j+1)).getPieceType());
+                    }
+                    else{
+                        piece=" ";
+                    }
             }
-            for (int j=0;j<8;j++){
-                String colorBG;
-                if (j%2==0){
-                    colorBG=SET_BG_COLOR_WHITE;
-                }
-                else{
-                    colorBG=SET_BG_COLOR_BLACK;
-                }
 
-                if (chessBoard.getPiece(new ChessPosition(i+1,j+1)).getTeamColor()== ChessGame.TeamColor.WHITE){
-                    piece = colorBG+SET_TEXT_COLOR_LIGHT_GREY;
-                }
-                else{
-                    piece = colorBG+SET_TEXT_COLOR_DARK_GREY;
-                }
-                piece=piece+pieceCharacters.get(chessBoard.getPiece(new ChessPosition(i,j)).getPieceType());
+
                 orderedList.add(piece);
             }
             piece = SET_BG_COLOR_DARK_GREY+SET_TEXT_COLOR_BLACK+rows.get(i)+RESET_BG_COLOR+"\n";
             orderedList.add(piece);
+
         }
         return orderedList;
     }
 
 
-    public void ChessBoardWhite(){
+    public void chessBoardWhite(){
         List<String> whiteBoard=constructStringBoard();
+        whiteBoard.set(0,"\n"+whiteBoard.get(0));
         for (String i:whiteBoard){
             System.out.print(i);
         }

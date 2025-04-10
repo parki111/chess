@@ -1,6 +1,8 @@
 package client;
 
 import java.util.Scanner;
+
+import chess.ChessGame;
 import client.Client;
 import ui.ChessBoardUI;
 
@@ -45,10 +47,10 @@ public class Repl {
     public void printBoard(){
         if (client.printBoard){
             if (client.getJoinedColor()==WHITE){
-                new ChessBoardUI().chessBoardWhite();
+                new ChessBoardUI(ChessGame.TeamColor.WHITE,new ChessGame().getBoard()).chessBoardWhite();
             }
             else{
-                new ChessBoardUI().chessBoardBlack();
+                new ChessBoardUI(ChessGame.TeamColor.BLACK,new ChessGame().getBoard()).chessBoardBlack();
             }
 
         }
