@@ -64,7 +64,7 @@ public class WebSocketHandler {
 
     @OnWebSocketMessage
     public void onMessage(Session session, String userJsonString) throws ResponseException, InvalidMoveException {
-//        try {
+        try {
             UserGameCommand gameCommand = new Gson().fromJson(userJsonString, UserGameCommand.class);
             //errorPresent(gameCommand,session);
         AuthData authData = authDAO.getAuthData(gameCommand.getAuthToken());
@@ -90,11 +90,11 @@ public class WebSocketHandler {
                 case RESIGN:
                     resign(gameCommand, session);
             }
-//        }
-//        catch(Exception e){
-//            int x=3;
-//            throw new ResponseException(200, "Error thing");
-//        }
+        }
+        catch(Exception e){
+            int x=3;
+            throw new ResponseException(400, "Error thing");
+        }
     }
 
     @OnWebSocketClose
@@ -182,7 +182,7 @@ public class WebSocketHandler {
         }
         System.out.println("calling makeMove");
 
-        gameDAO.updateGame(username,pieceColor.toString(),gameData); //is game actually updating in SQL?
+        gameDAO.updateGameWebsocket(gameData); //is game actually updating in SQL?
 
         LoadGameMessage message = new LoadGameMessage(game);
         broadcastMessage(message,session,command.getGameID()); //send message to you and everyone else
@@ -214,17 +214,19 @@ public class WebSocketHandler {
         AuthData authData = authDAO.getAuthData(command.getAuthToken());
         String username = authData.username();
         GameData gameData = gameDAO.findGame(command.getGameID());
-        ChessGame game = gameData.game();
+
 
         if (Objects.equals(username, gameData.blackUsername())){
             gameDAO.updateGameWebsocket(
                     new GameData(gameData.gameID(),gameData.whiteUsername(),null, gameData.gameName(), gameData.game()));
         }
-        else{
-            gameDAO.updateGame(username, ChessGame.TeamColor.BLACK.toString(),
+        else if (Objects.equals(username, gameData.whiteUsername())){
+            gameDAO.updateGameWebsocket(
                     new GameData(gameData.gameID(),null,gameData.blackUsername(), gameData.gameName(), gameData.game()));
         }
+
         broadcastMessage(new NotificationMessage(username+"left the game."),session,command.getGameID());
+        sessions.removeSession(command.getGameID(), session);
     }
 
     public void resign(UserGameCommand command, Session session){

@@ -103,7 +103,7 @@ public class SqlGamesData implements GameDAO {
     public void updateGameWebsocket(GameData gameData) throws ResponseException {
         String sql = "UPDATE gameData SET whiteUsername = ?, blackUsername=?, chessgame=? WHERE id = ?";
         executeUpdate(sql,gameData.whiteUsername(),gameData.blackUsername(),
-                gameData.gameName(),(new Gson()).toJson(gameData.game()),gameData.gameID());
+                new Gson().toJson(gameData.game()),gameData.gameID());
     }
 
     public void clearGames() throws ResponseException{
