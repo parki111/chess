@@ -1,5 +1,6 @@
 package client.websocket;
 import chess.ChessMove;
+import client.Client;
 import com.google.gson.Gson;
 import exception.ResponseException;
 import websocket.commands.MakeMoveCommand;
@@ -18,11 +19,12 @@ import java.net.URI;
 public class WebsocketFacade extends Endpoint implements MessageHandler.Whole<String>{
     public Session session;
     private GameHandler gameHandler;
-    public WebsocketFacade(Session session) throws ResponseException {
+    public WebsocketFacade() throws ResponseException {
         try {
             URI uri = new URI("ws://localhost:8080/ws");
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             this.session = container.connectToServer(this, uri);
+
         }
         catch(Exception e) {
             throw new ResponseException(400, "");
@@ -38,13 +40,15 @@ public class WebsocketFacade extends Endpoint implements MessageHandler.Whole<St
         ServerMessage message = new Gson().fromJson(messageReceived,ServerMessage.class);
         if(message.getServerMessageType()== ServerMessage.ServerMessageType.LOAD_GAME){
             LoadGameMessage loadGameMessage = new Gson().fromJson(messageReceived,LoadGameMessage.class);
+            gameHandler.updateGame(loadGameMessage.getChessGame(),null);
         }
         else if(message.getServerMessageType() == ServerMessage.ServerMessageType.NOTIFICATION){
             NotificationMessage notificationMessage = new Gson().fromJson(messageReceived, NotificationMessage.class);
-            GameHandler.
+            gameHandler.printMessage(notificationMessage.)
         }
         else{
             ErrorMessage errorMessage = new Gson().fromJson(messageReceived, ErrorMessage.class);
+
         }
     }
 

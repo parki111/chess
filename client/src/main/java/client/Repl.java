@@ -5,6 +5,7 @@ import java.util.Scanner;
 import chess.ChessGame;
 import chess.ChessPosition;
 import client.Client;
+import exception.ResponseException;
 import ui.ChessBoardUI;
 
 import static chess.ChessGame.TeamColor.BLACK;
@@ -14,7 +15,7 @@ import static ui.EscapeSequences.*;
 public class Repl {
     private final Client client;
 
-    public Repl(String serverUrl) {
+    public Repl(String serverUrl) throws ResponseException {
         client = new Client(serverUrl);
     }
 

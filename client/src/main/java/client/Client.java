@@ -6,6 +6,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import chess.ChessGame;
+import chess.ChessPiece;
+import chess.ChessPosition;
+import client.websocket.GameHandler;
+import client.websocket.WebsocketFacade;
 import com.google.gson.Gson;
 import model.GameData;
 import model.AuthData;
@@ -19,7 +23,7 @@ import static chess.ChessGame.TeamColor.BLACK;
 import static chess.ChessGame.TeamColor.WHITE;
 
 
-public class Client {
+public class Client implements GameHandler {
     public Boolean printBoard=false;
     private int userint;
     private String visitorName = null;
@@ -30,7 +34,8 @@ public class Client {
     private final String serverUrl;
     private State state = State.SIGNEDOUT;
     private GameData currGame = null;
-    public Client(String serverUrl) {
+    private WebsocketFacade websocketFacade = new WebsocketFacade();
+    public Client(String serverUrl) throws ResponseException {
         server = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
         this.gameDatas = new HashMap<>();
@@ -68,11 +73,11 @@ public class Client {
 
     }
 
-    public String makeMove(String...params){
+    public String makeMove(String...params) throws ResponseException {
         if (params.length ==2){
 
         }
-        throw new ResponseException("Expected: <PieceType> <Location>");
+        throw new ResponseException(400, "Expected: <PieceType> <Location>");
     }
 
     public String register(String... params) throws ResponseException {
@@ -175,8 +180,13 @@ public class Client {
         throw new ResponseException(400, "unauthorized");
     }
 
-    public void updateGame(ChessGame chessGame){
-        printBoard=true;
+
+    public void updateGame(ChessGame chessGame, ChessPiece validMoves) {
+
+    }
+
+    @Override
+    public void printMessage() {
 
     }
 

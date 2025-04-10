@@ -1,6 +1,9 @@
 package client.websocket;
 
+import chess.ChessGame;
+import chess.ChessPiece;
+
 public interface GameHandler {
-    void updateGame();
+    void updateGame(ChessGame chessGame, ChessPiece validMoves);
     void printMessage();
 }
