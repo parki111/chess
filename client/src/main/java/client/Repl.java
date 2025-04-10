@@ -14,7 +14,7 @@ import static chess.ChessGame.TeamColor.BLACK;
 import static chess.ChessGame.TeamColor.WHITE;
 import static ui.EscapeSequences.*;
 
-public class Repl implements GameHandler {
+public class Repl {
     private final Client client;
 
     public Repl(String serverUrl) throws ResponseException {
@@ -60,20 +60,5 @@ public class Repl implements GameHandler {
         }
     }
 
-    public void updateGame(ChessGame chessGame, ChessPiece validMoves) {
-        if (client.printBoard){
-            if (client.getJoinedColor()==WHITE){
-                new ChessBoardUI(ChessGame.TeamColor.WHITE,new ChessGame(),new ChessPosition(2,2)).chessBoardWhite();
-            }
-            else{
-                new ChessBoardUI(ChessGame.TeamColor.BLACK,new ChessGame(),new ChessPosition (2,2)).chessBoardBlack();
-            }
 
-        }
-    }
-
-
-    public void printMessage(String message) {
-
-    }
 }

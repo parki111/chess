@@ -1,5 +1,6 @@
 package client;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -23,7 +24,7 @@ import static chess.ChessGame.TeamColor.BLACK;
 import static chess.ChessGame.TeamColor.WHITE;
 
 
-public class Client implements GameHandler {
+public class Client {
     public Boolean printBoard=false;
     private int userint;
     private String visitorName = null;
@@ -33,16 +34,15 @@ public class Client implements GameHandler {
     private ChessGame.TeamColor joinedColor = null;
     private final String serverUrl;
     private State state = State.SIGNEDOUT;
-    private GameData currGame = null;
+    private ChessGame currGame = null;
     private WebsocketFacade websocketFacade = new WebsocketFacade();
+    private Integer currGameid;
+
     public Client(String serverUrl) throws ResponseException {
         server = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
         this.gameDatas = new HashMap<>();
         userint=1;
-
-
-
 //        this.notificationHandler = notificationHandler;
     }
 
@@ -72,19 +72,29 @@ public class Client implements GameHandler {
         }
     }
 
-    public String printLegalMoves(){
+    public String printLegalMoves(String ... params) throws ResponseException {
+        assertSignedIn();
 
     }
 
-    public String leave(){
+    public void leave() throws ResponseException, IOException {
+        assertSignedIn();
+        if(currGame==null){
+            throw new ResponseException(400, "Not in game");
+        }
+        websocketFacade.leaveGame(authToken,currGameid);
 
     }
 
-    public String resign(){
-
+    public String resign() throws ResponseException {
+        assertSignedIn();
+        if(currGame==null){
+            throw new ResponseException(400, "Not in game");
+        }
     }
 
-    public String redrawBoard(){
+    public String redrawBoard() throws ResponseException {
+        assertSignedIn();
 
     }
 
@@ -94,8 +104,6 @@ public class Client implements GameHandler {
         }
         throw new ResponseException(400, "Expected: <PieceType> <Location>");
     }
-
-
 
     public String register(String... params) throws ResponseException {
         if (params.length == 3) {
@@ -186,9 +194,8 @@ public class Client implements GameHandler {
                 else{
                     throw new ResponseException(400, "Expected: <playercolor> <gameid>");
                 }
-
-                server.joinGame(new JoinGameRequest(authToken,params[0],gameDatas.get(Integer.parseInt(params[1]))));
-
+                currGame= server.joinGame(new JoinGameRequest(authToken,params[0],gameDatas.get(Integer.parseInt(params[1]))));
+                currGameid=gameDatas.get(Integer.parseInt(params[1]));
                 printBoard=true;
                 return String.format("Joined game %s as %s", params[1],params[0]);
             }
@@ -200,10 +207,11 @@ public class Client implements GameHandler {
 
 
 
-    public String observeGame(String... params) throws ResponseException{
+    public String observeGame(String... params) throws ResponseException, IOException {
         assertSignedIn();
 
         if (gameDatas.containsKey(Integer.parseInt(params[0]))){
+            websocketFacade.connect(authToken,Integer.parseInt(params[0]));
             printBoard=true;
         }
         else{
