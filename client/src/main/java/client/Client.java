@@ -46,7 +46,7 @@ public class Client implements GameHandler{
 //        this.notificationHandler = notificationHandler;
     }
 
-    public String eval(String input) {
+    public String eval(String input) throws IOException{
         try {
             var tokens = input.split(" ");
             var cmd = (tokens.length > 0) ? tokens[0].toLowerCase() : "help";
@@ -79,11 +79,11 @@ public class Client implements GameHandler{
         }
 
         updateGame(currGame,parseChessPosition());
-
+        return "";
     }
 
     public ChessPosition parseChessPosition(){
-
+        return null;
     }
 
     public String leave() throws ResponseException, IOException {
@@ -107,7 +107,7 @@ public class Client implements GameHandler{
 
     public String redrawBoard() throws ResponseException {
         assertSignedIn();
-
+        return "";
     }
 
     public String makeMove(String...params) throws ResponseException {
@@ -228,7 +228,7 @@ public class Client implements GameHandler{
         }
     }
 
-
+    public void printMessage(String message){}
 
     public String observeGame(String... params) throws ResponseException, IOException {
         assertSignedIn();
