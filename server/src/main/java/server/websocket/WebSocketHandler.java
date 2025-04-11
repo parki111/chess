@@ -12,10 +12,8 @@ import model.AuthData;
 import model.GameData;
 import model.UserData;
 import org.eclipse.jetty.websocket.api.Session;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
-import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import org.eclipse.jetty.websocket.api.annotations.*;
+
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 import com.google.gson.Gson;
@@ -47,6 +45,10 @@ public class WebSocketHandler {
         }
     }
 
+    @OnWebSocketConnect
+    public void onConnect(Session session){
+        System.out.println("inside onConnect");
+    }
 
     @OnWebSocketError
     public void onError(Session session,Throwable throwable) throws ResponseException {
@@ -62,7 +64,9 @@ public class WebSocketHandler {
 
     @OnWebSocketMessage
     public void onMessage(Session session, String userJsonString) throws ResponseException, InvalidMoveException {
-            UserGameCommand gameCommand = new Gson().fromJson(userJsonString, UserGameCommand.class);
+        System.out.println("INSIDE ONMESSAGE");
+        UserGameCommand gameCommand = new Gson().fromJson(userJsonString, UserGameCommand.class);
+        System.out.println(userJsonString);
             //errorPresent(gameCommand,session);
         AuthData authData = authDAO.getAuthData(gameCommand.getAuthToken());
         if (authData==null){
@@ -92,19 +96,23 @@ public class WebSocketHandler {
 
     @OnWebSocketClose
     public void closeSocket(Session session, int a, String b){
+        System.out.println(b);
         sessions.removeSession(sessions.getGameID(session),session);
     }
 
 
 
     public void connect(UserGameCommand command, Session session) throws ResponseException {
+        System.out.println("Inside connect");
         sessions.addSession(command.getGameID(),session);
         AuthData authData = authDAO.getAuthData(command.getAuthToken());
         if (authData==null){
+            System.out.println("authdata is null");
             throw new ResponseException(200, "Websocket connect Not authorized");
         }
         GameData gameData = gameDAO.findGame(command.getGameID());
         if (gameData==null){
+            System.out.println("gamedata=null");
             throw new ResponseException(200,"Websocket connect No game with this gameID");
         }
 

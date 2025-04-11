@@ -12,17 +12,29 @@ public class WebSocketSessions {
     public final HashMap<Session, Integer> sessionsGameiD = new HashMap<>();
 
     public void addSession(Integer gameID, Session session) {
-        if (!sessions.containsKey(gameID)){
-            sessions.put(gameID,new HashSet<>());
+        try {
+            if (!sessions.containsKey(gameID)) {
+                sessions.put(gameID, new HashSet<>());
 
+            }
+            sessionsGameiD.put(session, gameID);
+            sessions.get(gameID).add(session);
         }
-        sessionsGameiD.put(session,gameID);
-        sessions.get(gameID).add(session);
+        catch(Exception e) {
+            System.out.println("Failed to add session");
+        }
+
     }
 
     public void removeSession(Integer gameID, Session session) {
-        sessions.get(gameID).remove(session);
-        sessionsGameiD.remove(session);
+        try{
+            sessions.get(gameID).remove(session);
+            sessionsGameiD.remove(session);
+        }
+        catch(Exception e){
+            System.out.println("Failed to leave game, no such game");
+        }
+
     }
 
     public HashSet<Session> getSessions(Integer gameID){

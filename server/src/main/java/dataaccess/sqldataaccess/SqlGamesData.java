@@ -42,7 +42,7 @@ public class SqlGamesData implements GameDAO {
                 try (var rs = ps.executeQuery()) {
                     while (rs.next()) {
                         result.add(readGameData(rs));
-                        System.out.println("Number of games: " + result.size());
+//                        System.out.println("Number of games: " + result.size());
                     }
                 }
             }

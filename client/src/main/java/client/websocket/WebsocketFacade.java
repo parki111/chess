@@ -16,19 +16,36 @@ import java.io.IOException;
 import java.net.URI;
 
 
-public class WebsocketFacade extends Endpoint implements MessageHandler.Whole<String>{
+public class WebsocketFacade extends Endpoint{
     public Session session;
     private GameHandler gameHandler;
     public WebsocketFacade(GameHandler client) throws ResponseException {
         try {
-            URI uri = new URI("ws://localhost:8080/ws");
             gameHandler=client;
+            URI uri = new URI("ws://localhost:8080/ws");
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             this.session = container.connectToServer(this, uri);
-            this.session.addMessageHandler(this);
+            this.session.addMessageHandler(new MessageHandler.Whole<String>() {
+                @Override
+                public void onMessage(String messageReceived){
+                    ServerMessage message = new Gson().fromJson(messageReceived,ServerMessage.class);
+                    if(message.getServerMessageType()== ServerMessage.ServerMessageType.LOAD_GAME){
+                        LoadGameMessage loadGameMessage = new Gson().fromJson(messageReceived,LoadGameMessage.class);
+                        gameHandler.updateGame(loadGameMessage.getChessGame(),null);
+                    }
+                    else if(message.getServerMessageType() == ServerMessage.ServerMessageType.NOTIFICATION){
+                        NotificationMessage notificationMessage = new Gson().fromJson(messageReceived, NotificationMessage.class);
+                        gameHandler.printMessage(notificationMessage.getMessage());
+                    }
+                    else{
+                        ErrorMessage errorMessage = new Gson().fromJson(messageReceived, ErrorMessage.class);
+                        gameHandler.printMessage(errorMessage.getErrorMessage());
+                    }
+                }
+            });
         }
         catch(Exception e) {
-            throw new ResponseException(400, "");
+            throw new ResponseException(500, "");
         }
     }
 
@@ -36,22 +53,22 @@ public class WebsocketFacade extends Endpoint implements MessageHandler.Whole<St
     public void onOpen(Session session, EndpointConfig endpointConfig){
     }
 
-    @Override
-    public void onMessage(String messageReceived){
-        ServerMessage message = new Gson().fromJson(messageReceived,ServerMessage.class);
-        if(message.getServerMessageType()== ServerMessage.ServerMessageType.LOAD_GAME){
-            LoadGameMessage loadGameMessage = new Gson().fromJson(messageReceived,LoadGameMessage.class);
-            gameHandler.updateGame(loadGameMessage.getChessGame(),null);
-        }
-        else if(message.getServerMessageType() == ServerMessage.ServerMessageType.NOTIFICATION){
-            NotificationMessage notificationMessage = new Gson().fromJson(messageReceived, NotificationMessage.class);
-            gameHandler.printMessage(notificationMessage.getMessage());
-        }
-        else{
-            ErrorMessage errorMessage = new Gson().fromJson(messageReceived, ErrorMessage.class);
-            gameHandler.printMessage(errorMessage.getErrorMessage());
-        }
-    }
+//    @Override
+//    public void onMessage(String messageReceived){
+//        ServerMessage message = new Gson().fromJson(messageReceived,ServerMessage.class);
+//        if(message.getServerMessageType()== ServerMessage.ServerMessageType.LOAD_GAME){
+//            LoadGameMessage loadGameMessage = new Gson().fromJson(messageReceived,LoadGameMessage.class);
+//            gameHandler.updateGame(loadGameMessage.getChessGame(),null);
+//        }
+//        else if(message.getServerMessageType() == ServerMessage.ServerMessageType.NOTIFICATION){
+//            NotificationMessage notificationMessage = new Gson().fromJson(messageReceived, NotificationMessage.class);
+//            gameHandler.printMessage(notificationMessage.getMessage());
+//        }
+//        else{
+//            ErrorMessage errorMessage = new Gson().fromJson(messageReceived, ErrorMessage.class);
+//            gameHandler.printMessage(errorMessage.getErrorMessage());
+//        }
+//    }
 
     public void connect(String authToken, Integer gameID) throws IOException {
         UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.CONNECT,authToken,gameID);

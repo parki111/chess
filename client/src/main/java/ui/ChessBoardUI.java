@@ -46,10 +46,10 @@ public class ChessBoardUI {
 
     public List<String> constructStringBoard(){
         List<String> orderedList = new ArrayList<>();
-        List<String> rows = new ArrayList<>(Arrays.asList("   ", " 8 ", " 7 "," 6 "," 5 "," 4 "," 3 "," 2 "," 1 ","   "));
+        List<String> rows = new ArrayList<>(Arrays.asList("   ", " 1 ", " 2 "," 3 "," 4 "," 5 "," 6 "," 7 "," 8 ","   "));
         List<String> firstRow = new ArrayList<>(Arrays.asList(" a ", " b "," c "," d "," e "," f "," g "," h "));
         String piece;
-        for (int i=0;i<10;i++){
+        for (int i=9;i>-1;i--){
             piece = SET_TEXT_COLOR_BLACK+rows.get(i);
             orderedList.add(piece);
             if (i==0 || i==9){
@@ -60,7 +60,7 @@ public class ChessBoardUI {
             }else{
                 for (int j=0;j<8;j++){
                     String colorBG;
-                    if ((j+i+1)%2==0){
+                    if ((j+i)%2==0){
 
 //                        colorBG=
                         colorBG= (validMovesPos!=null && validMoves.contains(new ChessPosition(i,j+1)))?
@@ -77,7 +77,7 @@ public class ChessBoardUI {
                     }
                     if(chessBoard.getPiece(new ChessPosition(i,j+1))!=null){
                         piece = (chessBoard.getPiece(new ChessPosition(i,j+1)).getTeamColor()== ChessGame.TeamColor.WHITE)?
-                                colorBG+SET_TEXT_COLOR_LIGHT_GREY:colorBG+SET_TEXT_COLOR_MAGENTA;
+                                colorBG+SET_TEXT_COLOR_MAGENTA:colorBG+SET_TEXT_COLOR_LIGHT_GREY;
 
                         piece=piece+pieceCharacters.get(chessBoard.getPiece(new ChessPosition(i,j+1)).getPieceType());
                     }
@@ -94,7 +94,7 @@ public class ChessBoardUI {
         return orderedList;
     }
 
-    public void chessBoardBlack(){
+    public void chessBoardWhite(){
         List<String> whiteBoard=constructStringBoard();
 
         for (int i = 0; i < 10; i++) {
@@ -108,7 +108,7 @@ public class ChessBoardUI {
         }
     }
 
-    public void chessBoardWhite(){
+    public void chessBoardBlack(){
         List<String> whiteBoard = constructStringBoard();
         Collections.reverse(whiteBoard);
         for (int i = 0; i < 10; i++) {

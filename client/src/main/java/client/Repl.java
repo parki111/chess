@@ -1,5 +1,6 @@
 package client;
 
+import java.util.Objects;
 import java.util.Scanner;
 
 import chess.ChessGame;
@@ -18,7 +19,7 @@ public class Repl {
     private final Client client;
 
     public Repl(String serverUrl) throws ResponseException {
-        client = new Client(serverUrl);
+        client = new Client(Objects.requireNonNullElse(serverUrl,"http://localhost:8080"));
     }
 
     public void run() {
@@ -39,7 +40,7 @@ public class Repl {
                 var msg = e.toString();
                 System.out.print(msg);
             }
-            printBoard();
+
         }
         System.out.println();
     }
@@ -48,17 +49,7 @@ public class Repl {
         System.out.print("\n" + RESET_TEXT_COLOR + ">>> " + SET_TEXT_COLOR_GREEN);
     }
 
-    public void printBoard(){
-        if (client.printBoard){
-            if (client.getJoinedColor()==WHITE){
-                new ChessBoardUI(ChessGame.TeamColor.WHITE,new ChessGame(),new ChessPosition(2,2)).chessBoardWhite();
-            }
-            else{
-                new ChessBoardUI(ChessGame.TeamColor.BLACK,new ChessGame(),new ChessPosition (2,2)).chessBoardBlack();
-            }
 
-        }
-    }
 
 
 }
