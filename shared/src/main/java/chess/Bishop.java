@@ -20,9 +20,9 @@ public class Bishop implements PieceMovesCalculator{
         bishopMoves.addAll(bishop.chessmoveDirection(-1, 1, startPos, board));
         bishopMoves.addAll(bishop.chessmoveDirection(1, -1, startPos, board));
         bishopMoves.addAll(bishop.chessmoveDirection(-1, -1, startPos, board));
-        for (ChessMove move : bishopMoves) {
-            System.out.println("("+move.getEndPosition().getRow()+","+move.getEndPosition().getColumn()+")");
-        }
+//        for (ChessMove move : bishopMoves) {
+//            System.out.println("("+move.getEndPosition().getRow()+","+move.getEndPosition().getColumn()+")");
+
 
 
         return bishopMoves;

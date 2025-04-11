@@ -20,7 +20,7 @@ public class Rook implements PieceMovesCalculator{
         rookMoves.addAll(rook.chessmoveDirection(0, 1, startPos, board));
         rookMoves.addAll(rook.chessmoveDirection(-1, 0, startPos, board));
         rookMoves.addAll(rook.chessmoveDirection(0, -1, startPos, board));
-        System.out.println(rookMoves);
+//        System.out.println(rookMoves);
 
         return rookMoves;
     }

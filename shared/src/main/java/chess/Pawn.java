@@ -27,7 +27,7 @@ public class Pawn implements PieceMovesCalculator{
             pawnMoves.addAll(pawn.chessmoveDirection(1, 1, startPos, board));
             pawnMoves.addAll(pawn.chessmoveDirection(1, -1, startPos, board));
         }
-        System.out.println(pawnMoves);
+//        System.out.println(pawnMoves);
         return pawnMoves;
     }
 }

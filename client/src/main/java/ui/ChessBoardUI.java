@@ -16,7 +16,8 @@ public class ChessBoardUI {
     private HashSet<ChessPosition> validMoves;
 
     public ChessBoardUI(ChessGame.TeamColor color, ChessGame chessGame,ChessPosition validMovesPosition){
-        boardColor=color;
+        boardColor=(color==ChessGame.TeamColor.WHITE)? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
+
         validMovesPos=validMovesPosition;
         this.chessGame = chessGame;
         chessBoard=chessGame.getBoard();
@@ -59,7 +60,7 @@ public class ChessBoardUI {
             }else{
                 for (int j=0;j<8;j++){
                     String colorBG;
-                    if ((j+i)%2==0){
+                    if ((j+i+1)%2==0){
 
                         colorBG=SET_BG_COLOR_WHITE;
                         if (validMovesPos!=null && validMoves.contains(new ChessPosition(i,j+1))){
@@ -97,17 +98,12 @@ public class ChessBoardUI {
         return orderedList;
     }
 
-    public void chessBoardWhite(){
+    public void chessBoardBlack(){
         List<String> whiteBoard=constructStringBoard();
 
-        for (int i=0;i<10;i++){
+        for (int i = 0; i < 10; i++) {
 
-            if (i!=9){
-                whiteBoard.set(10*i,SET_BG_COLOR_DARK_GREY+whiteBoard.get(10*i));
-                whiteBoard.set(i,SET_BG_COLOR_DARK_GREY+whiteBoard.get(i));
-                whiteBoard.set(90+i,SET_BG_COLOR_DARK_GREY+whiteBoard.get(90+i));
-            }
-            whiteBoard.set(9+10*i,SET_BG_COLOR_DARK_GREY+whiteBoard.get(9+10*i)+RESET_BG_COLOR+"\n");
+            RotateBoard(whiteBoard, i);
 
         }
         whiteBoard.set(0,"\n"+whiteBoard.get(0));
@@ -116,22 +112,28 @@ public class ChessBoardUI {
         }
     }
 
-    public void chessBoardBlack(){
+    public void chessBoardWhite(){
         List<String> whiteBoard = constructStringBoard();
         Collections.reverse(whiteBoard);
         for (int i = 0; i < 10; i++) {
-            if (i != 9) {
-                whiteBoard.set(10 * i, SET_BG_COLOR_DARK_GREY + whiteBoard.get(10 * i));
-                whiteBoard.set(i, SET_BG_COLOR_DARK_GREY + whiteBoard.get(i));
-                whiteBoard.set(90 + i, SET_BG_COLOR_DARK_GREY + whiteBoard.get(90 + i));
-            }
-            whiteBoard.set(9 + 10 * i, SET_BG_COLOR_DARK_GREY + whiteBoard.get(9 + 10 * i) + RESET_BG_COLOR + "\n");
-            whiteBoard.set(0, "\n" + whiteBoard.get(0));
+            RotateBoard(whiteBoard, i);
+
         }
+        whiteBoard.set(0, "\n" + whiteBoard.get(0));
             for (String i : whiteBoard) {
                 System.out.print(i);
             }
 
     }
+
+    private void RotateBoard(List<String> whiteBoard, int i) {
+        if (i != 9) {
+            whiteBoard.set(10 * i, SET_BG_COLOR_DARK_GREY + whiteBoard.get(10 * i));
+            whiteBoard.set(i, SET_BG_COLOR_DARK_GREY + whiteBoard.get(i));
+            whiteBoard.set(90 + i, SET_BG_COLOR_DARK_GREY + whiteBoard.get(90 + i));
+        }
+        whiteBoard.set(9 + 10 * i, SET_BG_COLOR_DARK_GREY + whiteBoard.get(9 + 10 * i) + RESET_BG_COLOR + "\n");
+    }
+
 
 }

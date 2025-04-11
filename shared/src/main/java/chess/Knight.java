@@ -24,7 +24,7 @@ public class Knight implements PieceMovesCalculator{
         knightMoves.addAll(knight.chessmoveDirection(-1, 2, startPos, board));
         knightMoves.addAll(knight.chessmoveDirection(1, 2, startPos, board));
         knightMoves.addAll(knight.chessmoveDirection(2, 1, startPos, board));
-        System.out.println(knightMoves);
+//        System.out.println(knightMoves);
 
         return knightMoves;
     }

@@ -47,8 +47,8 @@ public class ChessBoard {
     public void addPiece(ChessPosition position, ChessPiece piece) {
         chessBoard[position.getRow()-1][position.getColumn()-1] = piece;
         if (piece!=null){
-            System.out.println(this);
-            System.out.println("Added piece!");
+//            System.out.println(this);
+//            System.out.println("Added piece!");
         }
 
     }
@@ -83,9 +83,9 @@ public class ChessBoard {
         if (o == null || getClass() != o.getClass()) {
 //            System.out.println("expected"+given.chessBoard[i][j]);
 //                    System.out.println(chessBoard[i][j]);
-            System.out.println(this);
-            System.out.println(o);
-            System.out.println("not true");
+//            System.out.println(this);
+//            System.out.println(o);
+//            System.out.println("not true");
             return false;
         }
         ChessBoard given=(ChessBoard) o;
@@ -100,16 +100,16 @@ public class ChessBoard {
                 else if (given.chessBoard[i][j]==null && chessBoard[i][j]==null) {
                 }
                 else if (!given.chessBoard[i][j].toString().equals(chessBoard[i][j].toString())){
-                    System.out.println("expected"+given.chessBoard[i][j]);
-                    System.out.println(chessBoard[i][j]);
-                    System.out.println("false");
+//                    System.out.println("expected"+given.chessBoard[i][j]);
+//                    System.out.println(chessBoard[i][j]);
+//                    System.out.println("false");
                     return false;
                 }
 
                 }
             }
 
-        System.out.println("true");
+//        System.out.println("true");
         return true;
     }
 

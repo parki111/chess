@@ -24,9 +24,9 @@ public class Queen implements PieceMovesCalculator{
         queenMoves.addAll(queen.chessmoveDirection(0, 1, startPos, board));
         queenMoves.addAll(queen.chessmoveDirection(-1, 0, startPos, board));
         queenMoves.addAll(queen.chessmoveDirection(0, -1, startPos, board));
-        for (ChessMove move : queenMoves) {
-            System.out.println("("+move.getEndPosition().getRow()+","+move.getEndPosition().getColumn()+")");
-        }
+//        for (ChessMove move : queenMoves) {
+//            System.out.println("("+move.getEndPosition().getRow()+","+move.getEndPosition().getColumn()+")");
+
 
 
         return queenMoves;

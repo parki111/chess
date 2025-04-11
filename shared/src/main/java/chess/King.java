@@ -24,9 +24,9 @@ public class King implements PieceMovesCalculator{
         kingMoves.addAll(king.chessmoveDirection(0, 1, startPos, board));
         kingMoves.addAll(king.chessmoveDirection(-1, 0, startPos, board));
         kingMoves.addAll(king.chessmoveDirection(0, -1, startPos, board));
-        for (ChessMove move : kingMoves) {
-            System.out.println("("+move.getEndPosition().getRow()+","+move.getEndPosition().getColumn()+")");
-        }
+//        for (ChessMove move : kingMoves) {
+//            System.out.println("("+move.getEndPosition().getRow()+","+move.getEndPosition().getColumn()+")");
+
 
 
         return kingMoves;
