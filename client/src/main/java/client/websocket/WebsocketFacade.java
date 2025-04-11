@@ -19,9 +19,10 @@ import java.net.URI;
 public class WebsocketFacade extends Endpoint implements MessageHandler.Whole<String>{
     public Session session;
     private GameHandler gameHandler;
-    public WebsocketFacade() throws ResponseException {
+    public WebsocketFacade(GameHandler client) throws ResponseException {
         try {
             URI uri = new URI("ws://localhost:8080/ws");
+            gameHandler=client;
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             this.session = container.connectToServer(this, uri);
             this.session.addMessageHandler(this);
@@ -32,7 +33,7 @@ public class WebsocketFacade extends Endpoint implements MessageHandler.Whole<St
     }
 
     @Override
-    public void onOpen(Session sesssion, EndpointConfig endpointConfig){
+    public void onOpen(Session session, EndpointConfig endpointConfig){
     }
 
     @Override

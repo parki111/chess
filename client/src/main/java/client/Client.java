@@ -24,7 +24,7 @@ import static chess.ChessGame.TeamColor.BLACK;
 import static chess.ChessGame.TeamColor.WHITE;
 
 
-public class Client {
+public class Client implements GameHandler{
     public Boolean printBoard=false;
     private int userint;
     private String visitorName = null;
@@ -35,7 +35,7 @@ public class Client {
     private final String serverUrl;
     private State state = State.SIGNEDOUT;
     private ChessGame currGame = null;
-    private WebsocketFacade websocketFacade = new WebsocketFacade();
+    private WebsocketFacade websocketFacade;
     private Integer currGameid;
 
     public Client(String serverUrl) throws ResponseException {
@@ -74,23 +74,35 @@ public class Client {
 
     public String printLegalMoves(String ... params) throws ResponseException {
         assertSignedIn();
+        if(currGame==null){
+            throw new ResponseException(400, "Not in game");
+        }
+
+        updateGame(currGame,parseChessPosition());
 
     }
 
-    public void leave() throws ResponseException, IOException {
+    public ChessPosition parseChessPosition(){
+
+    }
+
+    public String leave() throws ResponseException, IOException {
         assertSignedIn();
         if(currGame==null){
             throw new ResponseException(400, "Not in game");
         }
         websocketFacade.leaveGame(authToken,currGameid);
-
+        websocketFacade = null;
+        return "You left the game.";
     }
 
-    public String resign() throws ResponseException {
+    public String resign() throws ResponseException, IOException {
         assertSignedIn();
         if(currGame==null){
             throw new ResponseException(400, "Not in game");
         }
+        websocketFacade.resignGame(authToken,currGameid);
+        return "You resigned.";
     }
 
     public String redrawBoard() throws ResponseException {
@@ -175,7 +187,7 @@ public class Client {
         throw new ResponseException(400, "unauthorized");
     }
 
-    public String joinGame(String... params) throws ResponseException{
+    public String joinGame(String... params) throws ResponseException, IOException {
         assertSignedIn();
         if (authToken!=null && !authToken.isEmpty()) {
             if (params.length==2){
@@ -194,8 +206,11 @@ public class Client {
                 else{
                     throw new ResponseException(400, "Expected: <playercolor> <gameid>");
                 }
+                websocketFacade = new WebsocketFacade(this);
+
                 currGame= server.joinGame(new JoinGameRequest(authToken,params[0],gameDatas.get(Integer.parseInt(params[1]))));
                 currGameid=gameDatas.get(Integer.parseInt(params[1]));
+                websocketFacade.connect(authToken,currGameid);
                 printBoard=true;
                 return String.format("Joined game %s as %s", params[1],params[0]);
             }
@@ -204,13 +219,22 @@ public class Client {
         throw new ResponseException(400, "unauthorized");
     }
 
+    public void updateGame(ChessGame chessGame, ChessPosition validMoves) {
+        if (getJoinedColor()==WHITE || getJoinedColor()==null){
+            new ChessBoardUI(ChessGame.TeamColor.WHITE,chessGame,validMoves).chessBoardWhite();
+        }
+        else{
+            new ChessBoardUI(ChessGame.TeamColor.BLACK,chessGame,validMoves).chessBoardBlack();
+        }
+    }
 
 
 
     public String observeGame(String... params) throws ResponseException, IOException {
         assertSignedIn();
-
         if (gameDatas.containsKey(Integer.parseInt(params[0]))){
+            currGameid=gameDatas.get(Integer.parseInt(params[0]));
+            websocketFacade = new WebsocketFacade(this);
             websocketFacade.connect(authToken,Integer.parseInt(params[0]));
             printBoard=true;
         }
