@@ -37,6 +37,7 @@ public class Client implements GameHandler{
     private ChessGame currGame = null;
     private WebsocketFacade websocketFacade;
     private Integer currGameid;
+    public boolean observer = false;
 
     public Client(String serverUrl) throws ResponseException {
         server = new ServerFacade(serverUrl);
@@ -96,14 +97,34 @@ public class Client implements GameHandler{
             List<Character> rowList = new ArrayList<>(Arrays.asList('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'));
             row = rowList.indexOf(unparsed.charAt(0))+1;
             int column = Integer.parseInt(Character.toString(unparsed.charAt(1)));
-            if (column<8 || column<1){
+            if (column>8 || column<1){
                 throw new ResponseException(400, "Expected: <Row(Letter)Column(Number)>   eg. a1");
             }
-            return new ChessPosition(row,column);
+            return new ChessPosition(column,row);
         }
         catch(Exception e){
             throw new ResponseException(400, "Expected: <Row(Letter)Column(Number)>   eg. a1");
         }
+    }
+
+    public ChessPiece.PieceType parseChessPromotion(String unparsed) throws ResponseException{
+        if (unparsed.length()!=1){
+            throw new ResponseException(400, "Not a valid promotion piece. Expected Q, K, R, or B");
+        }
+        switch (unparsed) {
+            case "Q":
+                return ChessPiece.PieceType.QUEEN;
+            case "K":
+                return ChessPiece.PieceType.KNIGHT;
+            case "R":
+                return ChessPiece.PieceType.ROOK;
+            case "B":
+                return ChessPiece.PieceType.BISHOP;
+        }
+        throw new ResponseException(400, "Not a valid promotion piece. Expected Q, K, R, or B");
+    }
+    public boolean isObserver(){
+        return observer;
     }
 
     public String leave() throws ResponseException, IOException {
@@ -113,6 +134,8 @@ public class Client implements GameHandler{
         }
         websocketFacade.leaveGame(authToken,currGameid);
         websocketFacade = null;
+        currGame = null;
+        observer=false;
         return "You left the game.";
     }
 
@@ -149,15 +172,16 @@ public class Client implements GameHandler{
         if(currGame==null){
             throw new ResponseException(400, "Not in game");
         }
-        if (params.length != 2){
+        if (params.length != 2 && params.length !=3){
             throw new ResponseException(400, "Expected: <Row(Letter)Column(Number)> <Row(Letter)Column(Number)>  eg. a7 a6");
         }
         ChessPosition startPosition = parseChessPosition(params[0]);
         ChessPosition endPosition = parseChessPosition(params[1]);
+
         if(currGame.validMoves(startPosition).contains(new ChessMove(startPosition,endPosition,null))){
             ChessPiece.PieceType promotionPiece = null;
             if(currGame.validMoves(startPosition).contains(new ChessMove(startPosition,endPosition, ChessPiece.PieceType.QUEEN))){
-
+                promotionPiece=parseChessPromotion(params[2]);
             }
             websocketFacade.makeMove(authToken,currGameid,new ChessMove(startPosition,endPosition,promotionPiece));
             return "";
@@ -258,8 +282,9 @@ public class Client implements GameHandler{
                 }
 
 
-                currGame= server.joinGame(new JoinGameRequest(authToken,params[0],gameDatas.get(Integer.parseInt(params[1]))));
+                server.joinGame(new JoinGameRequest(authToken,params[0],gameDatas.get(Integer.parseInt(params[1]))));
                 currGameid=gameDatas.get(Integer.parseInt(params[1]));
+
                 websocketFacade = new WebsocketFacade(this);
                 websocketFacade.connect(authToken,currGameid);
 
@@ -271,6 +296,7 @@ public class Client implements GameHandler{
     }
 
     public void updateGame(ChessGame chessGame, ChessPosition validMoves) {
+        currGame=chessGame;
         if (getJoinedColor()==WHITE || getJoinedColor()==null){
             new ChessBoardUI(ChessGame.TeamColor.WHITE,chessGame,validMoves).chessBoardWhite();
         }
@@ -282,6 +308,7 @@ public class Client implements GameHandler{
 
     public void printMessage(String message){
         System.out.println(message);
+        System.out.print("\n" + RESET_TEXT_COLOR + ">>> " + SET_TEXT_COLOR_GREEN);
     }
 
     public String observeGame(String... params) throws ResponseException, IOException {
@@ -291,6 +318,7 @@ public class Client implements GameHandler{
             websocketFacade = new WebsocketFacade(this);
             websocketFacade.connect(authToken,Integer.parseInt(params[0]));
             printBoard=true;
+            observer=true;
         }
         else{
             throw new ResponseException(400, "Game does not exist");
@@ -314,6 +342,13 @@ public class Client implements GameHandler{
                     -redraw
                     -leave
                     -resign
+                    -legalmoves <(Letter)(Number)>
+                    """;
+        }
+        if (observer==true){
+            return """
+                    -redraw
+                    -leave
                     -legalmoves <(Letter)(Number)>
                     """;
         }

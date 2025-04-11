@@ -19,7 +19,7 @@ public class Repl {
     private final Client client;
 
     public Repl(String serverUrl) throws ResponseException {
-        client = new Client(Objects.requireNonNullElse(serverUrl,"http://localhost:8080"));
+        client = new Client(Objects.requireNonNullElse(serverUrl,"http://localhost:8081"));
     }
 
     public void run() {

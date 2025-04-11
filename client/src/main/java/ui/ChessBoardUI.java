@@ -24,7 +24,10 @@ public class ChessBoardUI {
         pieceCharacters= new HashMap<>();
         validMoves=new HashSet<>();
         constructHashmap();
-        constructValidMoves();
+        if (validMovesPos!=null){
+            constructValidMoves();
+        }
+
 
     }
 
@@ -50,11 +53,11 @@ public class ChessBoardUI {
         List<String> firstRow = new ArrayList<>(Arrays.asList(" a ", " b "," c "," d "," e "," f "," g "," h "));
         String piece;
         for (int i=9;i>-1;i--){
-            piece = SET_TEXT_COLOR_BLACK+rows.get(i);
+            piece = SET_TEXT_COLOR_WHITE+rows.get(i);
             orderedList.add(piece);
             if (i==0 || i==9){
                 for (int j=0;j<8;j++){
-                    piece = SET_TEXT_COLOR_BLACK+firstRow.get(j);
+                    piece = SET_TEXT_COLOR_WHITE+firstRow.get(j);
                     orderedList.add(piece);
                 }
             }else{
@@ -87,7 +90,7 @@ public class ChessBoardUI {
                     orderedList.add(piece);
                 }
             }
-            piece = SET_TEXT_COLOR_BLACK+rows.get(i);
+            piece = SET_TEXT_COLOR_WHITE+rows.get(i);
             orderedList.add(piece);
 
         }

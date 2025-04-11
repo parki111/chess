@@ -138,7 +138,7 @@ public class WebSocketHandler {
     public void makeMove(MakeMoveCommand command, Session session) throws ResponseException, InvalidMoveException {
         System.out.println("calling makeMove");
         GameData gameData = gameDAO.findGame(command.getGameID());
-        if (gameData.game().isEndGame()){sendMessage(new ErrorMessage("Game is over. Cannot resign."),session);return;}
+        if (gameData.game().isEndGame()){sendMessage(new ErrorMessage("Game is over. Cannot move pieces."),session);return;}
         AuthData authData = authDAO.getAuthData(command.getAuthToken());
         if (authData==null){
 //            System.out.println("didn't work");
@@ -158,10 +158,11 @@ public class WebSocketHandler {
         piece = game.getBoard().getPiece(command.getMove().getStartPosition());
 
         System.out.println("calling makeMove");
-        game.makeMove(requestedMove);   //might need to throw an exception if just calling it doesn't throw an invalid move
         ChessGame.TeamColor userColor;
         ChessGame.TeamColor pieceColor;
         ChessGame.TeamColor enemyColor;
+        boolean observer = false;
+
         if (Objects.equals(gameData.blackUsername(), username)){
             userColor= ChessGame.TeamColor.BLACK;
             enemyColor = ChessGame.TeamColor.WHITE;
@@ -171,8 +172,17 @@ public class WebSocketHandler {
             enemyColor = ChessGame.TeamColor.BLACK;
         }
         else{
-            sendMessage(new ErrorMessage("Invalid request. You cannot move this piece."),session);return;
+            sendMessage(new ErrorMessage("Invalid request. You are observing this game."),session);
+            return;
         }
+        if(game.getTeamTurn()!=userColor){
+            sendMessage(new ErrorMessage("Not your turn"),session);
+            return;
+        }
+            game.makeMove(requestedMove);   //might need to throw an exception if just calling it doesn't throw an invalid move
+
+
+
         if (piece.getTeamColor()== ChessGame.TeamColor.BLACK){
             pieceColor = ChessGame.TeamColor.BLACK;
         }
@@ -189,14 +199,16 @@ public class WebSocketHandler {
         LoadGameMessage message = new LoadGameMessage(game);
         broadcastMessage(message,session,command.getGameID()); //send message to you and everyone else
         sendMessage(message,session);
-        broadcastMessage(new NotificationMessage(username+" moved "+piece+"from "+requestedMove.getStartPosition()+
+        broadcastMessage(new NotificationMessage(username+" moved "+piece+" from "+requestedMove.getStartPosition()+
                 " to "+endPosition),session,command.getGameID()); //send message to everyone else with move made
 
         NotificationMessage possibleEndGame;
-        if (game.isInCheck(enemyColor)){
-            possibleEndGame = new NotificationMessage(enemyColor.toString()+"is in check!");
+        if (game.isInCheckmate(enemyColor)){
+            possibleEndGame = new NotificationMessage("Game ends in checkmate! " + pieceColor + " wins!");
             sendMessage(possibleEndGame,session);
             broadcastMessage(possibleEndGame,session,command.getGameID());
+            gameData.game().setEndGame(true);
+
         }
         else if (game.isInStalemate(enemyColor)){
             possibleEndGame = new NotificationMessage("Game ends in stalemate!");
@@ -204,11 +216,10 @@ public class WebSocketHandler {
             broadcastMessage(possibleEndGame,session,command.getGameID());
             gameData.game().setEndGame(true);
         }
-        else if (game.isInCheckmate(enemyColor)){
-            possibleEndGame = new NotificationMessage("Game ends in checkmate! " + pieceColor + " wins!");
+        else if(game.isInCheck(enemyColor)){
+            possibleEndGame = new NotificationMessage(enemyColor.toString()+" is in check!");
             sendMessage(possibleEndGame,session);
             broadcastMessage(possibleEndGame,session,command.getGameID());
-            gameData.game().setEndGame(true);
         }
         System.out.println("calling makeMove");
     }
@@ -229,7 +240,7 @@ public class WebSocketHandler {
                     new GameData(gameData.gameID(),null,gameData.blackUsername(), gameData.gameName(), gameData.game()));
         }
 
-        broadcastMessage(new NotificationMessage(username+"left the game."),session,command.getGameID());
+        broadcastMessage(new NotificationMessage(username+" left the game."),session,command.getGameID());
         sessions.removeSession(command.getGameID(), session);
     }
 
@@ -247,7 +258,7 @@ public class WebSocketHandler {
             return;
         }
         gameData.game().setEndGame(true);
-        NotificationMessage resigned = new NotificationMessage(username+"has resigned. Game ended.");
+        NotificationMessage resigned = new NotificationMessage(username+" has resigned. Game ended.");
         sendMessage(resigned,session);
         broadcastMessage(resigned,session,command.getGameID());
         gameDAO.updateGameWebsocket(gameData);
