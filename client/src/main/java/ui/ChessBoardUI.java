@@ -62,27 +62,23 @@ public class ChessBoardUI {
                     String colorBG;
                     if ((j+i+1)%2==0){
 
-                        colorBG=SET_BG_COLOR_WHITE;
-                        if (validMovesPos!=null && validMoves.contains(new ChessPosition(i,j+1))){
-                            colorBG=SET_BG_COLOR_GREEN;
-                        }
+//                        colorBG=
+                        colorBG= (validMovesPos!=null && validMoves.contains(new ChessPosition(i,j+1)))?
+                                SET_BG_COLOR_GREEN:SET_BG_COLOR_WHITE;
+
                     }
                     else{
-                        colorBG=SET_BG_COLOR_BLACK;
-                        if (validMovesPos!=null && validMoves.contains(new ChessPosition(i,j+1))){
-                            colorBG=SET_BG_COLOR_DARK_GREEN;
-                        }
+                        colorBG= (validMovesPos!=null && validMoves.contains(new ChessPosition(i,j+1)))?
+                                SET_BG_COLOR_DARK_GREEN:SET_BG_COLOR_BLACK;
+
                     }
                     if (validMovesPos!=null && validMovesPos.equals(new ChessPosition(i, j + 1))){
                         colorBG=SET_BG_COLOR_YELLOW;
                     }
                     if(chessBoard.getPiece(new ChessPosition(i,j+1))!=null){
-                        if (chessBoard.getPiece(new ChessPosition(i,j+1)).getTeamColor()== ChessGame.TeamColor.WHITE){
-                            piece = colorBG+SET_TEXT_COLOR_LIGHT_GREY;
-                        }
-                        else{
-                            piece = colorBG+SET_TEXT_COLOR_MAGENTA;
-                        }
+                        piece = (chessBoard.getPiece(new ChessPosition(i,j+1)).getTeamColor()== ChessGame.TeamColor.WHITE)?
+                                colorBG+SET_TEXT_COLOR_LIGHT_GREY:colorBG+SET_TEXT_COLOR_MAGENTA;
+
                         piece=piece+pieceCharacters.get(chessBoard.getPiece(new ChessPosition(i,j+1)).getPieceType());
                     }
                     else{
