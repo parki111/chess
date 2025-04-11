@@ -81,11 +81,7 @@ public class ChessBoard {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
-//            System.out.println("expected"+given.chessBoard[i][j]);
-//                    System.out.println(chessBoard[i][j]);
-//            System.out.println(this);
-//            System.out.println(o);
-//            System.out.println("not true");
+
             return false;
         }
         ChessBoard given=(ChessBoard) o;
@@ -100,9 +96,7 @@ public class ChessBoard {
                 else if (given.chessBoard[i][j]==null && chessBoard[i][j]==null) {
                 }
                 else if (!given.chessBoard[i][j].toString().equals(chessBoard[i][j].toString())){
-//                    System.out.println("expected"+given.chessBoard[i][j]);
-//                    System.out.println(chessBoard[i][j]);
-//                    System.out.println("false");
+
                     return false;
                 }
 

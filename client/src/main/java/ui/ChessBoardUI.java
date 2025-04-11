@@ -99,7 +99,7 @@ public class ChessBoardUI {
 
         for (int i = 0; i < 10; i++) {
 
-            RotateBoard(whiteBoard, i);
+            rotateBoard(whiteBoard, i);
 
         }
         whiteBoard.set(0,"\n"+whiteBoard.get(0));
@@ -112,7 +112,7 @@ public class ChessBoardUI {
         List<String> whiteBoard = constructStringBoard();
         Collections.reverse(whiteBoard);
         for (int i = 0; i < 10; i++) {
-            RotateBoard(whiteBoard, i);
+            rotateBoard(whiteBoard, i);
 
         }
         whiteBoard.set(0, "\n" + whiteBoard.get(0));
@@ -122,7 +122,7 @@ public class ChessBoardUI {
 
     }
 
-    private void RotateBoard(List<String> whiteBoard, int i) {
+    private void rotateBoard(List<String> whiteBoard, int i) {
         if (i != 9) {
             whiteBoard.set(10 * i, SET_BG_COLOR_DARK_GREY + whiteBoard.get(10 * i));
             whiteBoard.set(i, SET_BG_COLOR_DARK_GREY + whiteBoard.get(i));
